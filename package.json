@@ -1,5 +1,5 @@
 {
-  "name": "finance-app",
+  "name": "finance-app-api",
   "version": "1.0.0",
   "main": "index.ts",
   "type": "module",
