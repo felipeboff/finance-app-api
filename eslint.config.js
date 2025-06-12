@@ -15,18 +15,14 @@ export default defineConfig([
       },
       globals: globals.browser,
     },
-    plugins: {
-      // se quiser usar regras específicas no futuro
-    },
-    rules: {
-      // Regras personalizadas aqui
-    },
+    plugins: {},
+    rules: {},
   },
   js.configs.recommended,
   tseslint.configs.recommended,
   {
     rules: {
-      ...prettier.rules, // Desativa regras conflitantes com Prettier
+      ...prettier.rules,
     },
   },
 ]);
