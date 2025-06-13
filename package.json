@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "prepare": "husky",
-    "dev": "tsx watch index.ts"
+    "dev": "tsx watch index.ts",
+    "migrations": "tsx src/db/postgres/migrations/exec.ts"
   },
   "keywords": [],
   "author": "",
