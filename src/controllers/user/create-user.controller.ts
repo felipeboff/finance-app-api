@@ -6,7 +6,11 @@ import { badRequest, created, serverError } from "@/helpers/http-response";
 
 export const createUserController = async (req: Request, res: Response) => {
   try {
-    const { first_name, last_name, email, password } = req.body || {};
+    if (Object.keys(req.body).length === 0) {
+      return badRequest(res, "Request body is empty");
+    }
+
+    const { first_name, last_name, email, password } = req.body;
     const missing = [];
 
     if (!first_name?.trim()) missing.push("first_name");

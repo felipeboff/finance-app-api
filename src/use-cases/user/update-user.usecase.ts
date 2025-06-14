@@ -9,7 +9,6 @@ export class UpdateUserUseCase {
   constructor(private readonly userRepo = new UserPostgresRepository()) {}
   async execute(input: UpdateUserDTO) {
     const user = await this.userRepo.findById(input.id);
-    console.log(user?.last_name);
     if (!user) throw new UserNotFoundError(input.id);
 
     if (input.email) {
