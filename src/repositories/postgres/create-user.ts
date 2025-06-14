@@ -1,5 +1,5 @@
 import { query } from "@/db/postgres";
-import { CreateUserInput } from "@/usecases/create-user";
+import { CreateUserInput } from "@/use-cases/create-user";
 
 export class PostgresCreateUserRepository {
   async execute(input: CreateUserInput) {
