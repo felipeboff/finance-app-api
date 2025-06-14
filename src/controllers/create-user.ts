@@ -1,6 +1,7 @@
-import { CreateUserUseCase } from "@/use-cases/create-user";
 import { Request } from "express";
+import validator from "validator";
 
+import { CreateUserUseCase } from "@/use-cases/create-user";
 export class CreateUserController {
   async execute(request: Request) {
     try {
@@ -21,6 +22,28 @@ export class CreateUserController {
             },
           };
         }
+      }
+
+      if (!validator.isEmail(params.email)) {
+        return {
+          status: 400,
+          body: { error: "Invalid email" },
+        };
+      }
+
+      if (params.password.length < 6) {
+        return {
+          status: 400,
+          body: { error: "Password must be at least 6 characters long" },
+        };
+      } else if (!validator.isStrongPassword(params.password)) {
+        return {
+          status: 400,
+          body: {
+            error:
+              "Password must have at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
+          },
+        };
       }
 
       const createUserUseCase = new CreateUserUseCase();
