@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { validate as isUUID } from "uuid";
 import { GetUserByIdUseCase } from "@/use-cases/user/get-user-by-id.usecase";
 import { badRequest, notFound, ok, serverError } from "@/helpers/http-response";
+import { isValidUUID } from "@/validators/shared.validator";
 
 export class GetUserByIdController {
   constructor(private readonly useCase: GetUserByIdUseCase) {}
@@ -10,7 +10,7 @@ export class GetUserByIdController {
     try {
       const { userId } = req.params;
 
-      if (!isUUID(userId)) {
+      if (!isValidUUID(userId)) {
         return badRequest(res, "Invalid user ID");
       }
 

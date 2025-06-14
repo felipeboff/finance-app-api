@@ -1,19 +1,32 @@
 import { Request, Response } from "express";
-import validator from "validator";
 import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
 import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
 import { badRequest, created, serverError } from "@/helpers/http-response";
+import {
+  hasInvalidFields,
+  isValidBody,
+  isValidEmail,
+  isValidPassword,
+} from "@/validators/shared.validator";
 
 export class CreateUserController {
   constructor(private readonly useCase: CreateUserUseCase) {}
 
-  async execute(req: Request, res: Response) {
+  async execute(req: Request, res: Response): Promise<Response> {
     try {
-      if (Object.keys(req.body).length === 0) {
+      if (!isValidBody(req.body)) {
         return badRequest(res, "Request body is empty");
       }
 
-      const { first_name, last_name, email, password } = req.body;
+      const { first_name, last_name, email, password, ...rest } = req.body;
+
+      if (hasInvalidFields(rest)) {
+        return badRequest(
+          res,
+          `Invalid request fields: ${Object.keys(rest).join(", ")}`,
+        );
+      }
+
       const missing = [];
 
       if (!first_name?.trim()) missing.push("first_name");
@@ -25,11 +38,11 @@ export class CreateUserController {
         return badRequest(res, `Missing fields: ${missing.join(", ")}`);
       }
 
-      if (!validator.isEmail(email)) {
+      if (!isValidEmail(email)) {
         return badRequest(res, "Invalid email");
       }
 
-      if (password.length < 6) {
+      if (!isValidPassword(password)) {
         return badRequest(res, "Password too short (min 6)");
       }
 
