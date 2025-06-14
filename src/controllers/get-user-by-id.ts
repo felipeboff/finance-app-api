@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { GetUserByIdUseCase } from "@/use-cases/get-user-by-is";
-import { badRequest, ok, serverError } from "./helper";
+import { badRequest, notFound, ok, serverError } from "./helper";
 import { validate as uuidValidate } from "uuid";
 
 export class GetUserByIdController {
@@ -12,6 +12,9 @@ export class GetUserByIdController {
       }
       const getUserByIdUseCase = new GetUserByIdUseCase();
       const user = await getUserByIdUseCase.execute(userId);
+      if (!user) {
+        return notFound({ message: "User not found" });
+      }
       return ok({ data: user });
     } catch (error) {
       console.error(error);

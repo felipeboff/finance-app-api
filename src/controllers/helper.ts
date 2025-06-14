@@ -25,3 +25,8 @@ export const ok = (body: ResponseBody) => ({
   status: body?.status || 200,
   body: body.data,
 });
+
+export const notFound = (body: ResponseBody) => ({
+  status: body?.status || 404,
+  body,
+});
