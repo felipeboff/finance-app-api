@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS transactions (
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   date DATE NOT NULL,
-  amount NUMERIC(2) NOT NULL,
+  amount NUMERIC(1000, 2) NOT NULL,
   type transaction_type NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["dtos", "postgres", "usecase", "usecases", "uuidv"]
+  "cSpell.words": [
+    "dtos",
+    "postgres",
+    "typname",
+    "usecase",
+    "usecases",
+    "uuidv"
+  ]
 }
