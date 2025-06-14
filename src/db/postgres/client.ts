@@ -8,7 +8,7 @@ export const query = async (
 
   try {
     const result = await client.query(sql, params);
-    return result.rows;
+    return result;
   } finally {
     client.release();
   }
