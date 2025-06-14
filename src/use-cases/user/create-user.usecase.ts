@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { CreateUserDTO } from "@/dtos/create-user.dto";
+import { CreateUserDTO } from "@/dtos/user.dto";
 import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
 import { UserPostgresRepository } from "@/repositories/user/user-postgres.repository";
 import { hashPassword } from "@/services/hash.service";
@@ -13,8 +13,8 @@ export class CreateUserUseCase {
 
     const user = {
       id: uuidv4(),
-      firstName: input.firstName,
-      lastName: input.lastName,
+      first_name: input.first_name,
+      last_name: input.last_name,
       email: input.email,
       password: await hashPassword(input.password),
     };

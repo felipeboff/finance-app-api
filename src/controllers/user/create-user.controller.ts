@@ -6,11 +6,11 @@ import { badRequest, created, serverError } from "@/helpers/http-response";
 
 export const createUserController = async (req: Request, res: Response) => {
   try {
-    const { firstName, lastName, email, password } = req.body || {};
+    const { first_name, last_name, email, password } = req.body || {};
     const missing = [];
 
-    if (!firstName?.trim()) missing.push("firstName");
-    if (!lastName?.trim()) missing.push("lastName");
+    if (!first_name?.trim()) missing.push("first_name");
+    if (!last_name?.trim()) missing.push("last_name");
     if (!email?.trim()) missing.push("email");
     if (!password?.trim()) missing.push("password");
 
@@ -28,8 +28,8 @@ export const createUserController = async (req: Request, res: Response) => {
 
     const usecase = new CreateUserUseCase();
     const createdUser = await usecase.execute({
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       email,
       password,
     });
