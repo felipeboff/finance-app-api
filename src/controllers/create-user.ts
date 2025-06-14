@@ -1,8 +1,9 @@
 import { Request } from "express";
 import validator from "validator";
 
-import { CreateUserInput, CreateUserUseCase } from "@/use-cases/create-user";
+import { UserInput, CreateUserUseCase } from "@/use-cases/create-user";
 import { badRequest, created, serverError } from "./helper";
+import { EmailAlreadyExistsError } from "@/errors/user";
 export class CreateUserController {
   async execute(request: Request) {
     try {
@@ -35,8 +36,7 @@ export class CreateUserController {
         });
       }
 
-      const user: CreateUserInput = {
-        id: "",
+      const user: UserInput = {
         firstName,
         lastName,
         email,
@@ -48,6 +48,9 @@ export class CreateUserController {
 
       return created({ data: userCreated });
     } catch (error) {
+      if (error instanceof EmailAlreadyExistsError) {
+        return badRequest({ message: error.message });
+      }
       console.error(error);
       return serverError();
     }
