@@ -30,4 +30,8 @@ export class UserPostgresRepository {
 
     return result.rows[0];
   }
+
+  async delete(id: string): Promise<void> {
+    await query("DELETE FROM users WHERE id = $1", [id]);
+  }
 }
