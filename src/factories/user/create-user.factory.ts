@@ -1,5 +1,5 @@
 import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
-import { UserPostgresRepository } from "@/repositories/user/user-postgres.repository";
+import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
 import { CreateUserController } from "@/controllers/user/create-user.controller";
 import { query } from "@/db/postgres";
 

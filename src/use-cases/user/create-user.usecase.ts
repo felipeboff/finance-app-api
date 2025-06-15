@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { CreateUserDTO } from "@/dtos/user.dto";
 import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
-import { UserPostgresRepository } from "@/repositories/user/user-postgres.repository";
+import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
 import { hashPassword } from "@/services/hash.service";
 
 export class CreateUserUseCase {

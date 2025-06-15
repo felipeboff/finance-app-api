@@ -1,4 +1,4 @@
-import { UserPostgresRepository } from "@/repositories/user/user-postgres.repository";
+import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
 import { DeleteUserController } from "@/controllers/user/delete-user.controller";
 import { DeleteUserUseCase } from "@/use-cases/user/delete-user.usecase";
 import { query } from "@/db/postgres";
