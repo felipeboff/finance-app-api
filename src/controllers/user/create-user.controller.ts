@@ -53,6 +53,10 @@ export class CreateUserController {
         password,
       });
 
+      if (!createdUser) {
+        return badRequest(res, "Failed to create user");
+      }
+
       return created(res, createdUser);
     } catch (err) {
       if (err instanceof EmailAlreadyExistsError) {

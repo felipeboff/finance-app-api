@@ -50,6 +50,10 @@ export class UpdateUserController {
         password,
       });
 
+      if (!updatedUser) {
+        return badRequest(res, "Failed to update user");
+      }
+
       return ok(res, updatedUser);
     } catch (error) {
       if (error instanceof EmailAlreadyExistsError) {
