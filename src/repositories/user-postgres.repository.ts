@@ -29,7 +29,7 @@ export class UserPostgresRepository {
 
   async update(user: UserEntity): Promise<UserEntity> {
     const result = await this.db(
-      `UPDATE users SET first_name = $1, last_name = $2, email = $3, password = $4 WHERE id = $5 RETURNING *`,
+      `UPDATE users SET first_name = $1, last_name = $2, email = $3, password = $4, WHERE id = $5 RETURNING *`,
       [user.first_name, user.last_name, user.email, user.password, user.id],
     );
 
