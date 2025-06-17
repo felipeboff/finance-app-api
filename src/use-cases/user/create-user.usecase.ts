@@ -17,6 +17,7 @@ export class CreateUserUseCase {
       last_name: input.last_name,
       email: input.email,
       password: await hashPassword(input.password),
+      created_at: new Date(),
     };
 
     return await this.userRepo.create(user);

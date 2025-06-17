@@ -26,6 +26,7 @@ export class UpdateUserUseCase {
       password: input.password
         ? await hashPassword(input.password)
         : user.password,
+      created_at: user.created_at,
     };
 
     return await this.userRepo.update(safeUpdateValue);
