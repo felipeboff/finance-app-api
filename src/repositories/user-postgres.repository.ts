@@ -39,4 +39,9 @@ export class UserPostgresRepository {
   async delete(id: string): Promise<void> {
     await this.db("DELETE FROM users WHERE id = $1", [id]);
   }
+
+  async findAll(): Promise<UserEntity[]> {
+    const result = await this.db("SELECT * FROM users");
+    return result.rows;
+  }
 }

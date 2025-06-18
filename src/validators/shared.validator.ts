@@ -14,7 +14,7 @@ export const isValidPassword = (password: string): boolean => {
 };
 
 export const isValidBody = (body: Record<string, unknown>): boolean => {
-  return Object.keys(body).length > 0;
+  return body && Object.keys(body).length > 0;
 };
 
 export const hasUnexpectedFields = (obj: Record<string, unknown>): boolean => {
@@ -23,7 +23,5 @@ export const hasUnexpectedFields = (obj: Record<string, unknown>): boolean => {
 
 export const isValidDate = (date: string): boolean => {
   const parsed = new Date(date);
-  return (
-    !isNaN(parsed.getTime()) && date === parsed.toISOString().split("T")[0]
-  );
+  return !isNaN(parsed.getTime());
 };

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UpdateUserUseCase } from "@/use-cases/user/update-user.usecase";
-import { badRequest, ok, serverError } from "@/helpers/http-response";
+import { badRequest, ok, serverError } from "@/helpers/http-response.helper";
 import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
 import { UserNotFoundError } from "@/errors/user-not-found.error";
 import {

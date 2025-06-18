@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import { badRequest, notFound, ok, serverError } from "@/helpers/http-response";
+import {
+  badRequest,
+  notFound,
+  ok,
+  serverError,
+} from "@/helpers/http-response.helper";
 import { isValidUUID } from "@/validators/shared.validator";
 import { DeleteUserUseCase } from "@/use-cases/user/delete-user.usecase";
 import { UserNotFoundError } from "@/errors/user-not-found.error";

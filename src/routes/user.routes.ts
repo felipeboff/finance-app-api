@@ -4,8 +4,13 @@ import { makeCreateUserController } from "@/factories/user/create-user.factory";
 import { makeGetUserByIdController } from "@/factories/user/get-user-by-id.factory";
 import { makeUpdateUserController } from "@/factories/user/update-user.factory";
 import { makeDeleteUserController } from "@/factories/user/delete-user.factory";
+import { makeGetAllUsersController } from "@/factories/user/get-all-users.factory";
 
 const router = Router();
+
+router.get("/", async (req, res) => {
+  await makeGetAllUsersController().execute(res);
+});
 
 router.post("/", async (req, res) => {
   await makeCreateUserController().execute(req, res);

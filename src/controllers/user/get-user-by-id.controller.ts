@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { GetUserByIdUseCase } from "@/use-cases/user/get-user-by-id.usecase";
-import { badRequest, notFound, ok, serverError } from "@/helpers/http-response";
+import {
+  badRequest,
+  notFound,
+  ok,
+  serverError,
+} from "@/helpers/http-response.helper";
 import { isValidUUID } from "@/validators/shared.validator";
 
 export class GetUserByIdController {
