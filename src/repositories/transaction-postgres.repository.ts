@@ -11,8 +11,15 @@ export class TransactionsPostgresRepository {
 
   async create(transaction: TransactionEntity): Promise<TransactionEntity> {
     await this.db(
-      `INSERT INTO transactions (id, amount, type) VALUES ($1, $2, $3)`,
-      [transaction.id, transaction.amount, transaction.type],
+      `INSERT INTO transactions (id, user_id, title, date, amount, type) VALUES ($1, $2, $3, $4, $5, $6)`,
+      [
+        transaction.id,
+        transaction.user_id,
+        transaction.title,
+        transaction.date,
+        transaction.amount,
+        transaction.type,
+      ],
     );
 
     const result = await this.db("SELECT * FROM transactions WHERE id = $1", [

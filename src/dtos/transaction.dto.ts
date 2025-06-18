@@ -1,16 +1,21 @@
+export enum TransactionType {
+  EARNING = "EARNING",
+  EXPENSE = "EXPENSE",
+  INVESTMENT = "INVESTMENT",
+}
+
 export interface CreateTransactionDTO {
   user_id: string;
-  name: string;
+  title: string;
   date: Date;
   amount: number;
-  type: string;
+  type: TransactionType;
 }
 
 export interface UpdateTransactionDTO {
   id: string;
-  user_id?: string;
-  name?: string;
+  title?: string;
   date?: Date;
   amount?: number;
-  type?: string;
+  type?: TransactionType;
 }
