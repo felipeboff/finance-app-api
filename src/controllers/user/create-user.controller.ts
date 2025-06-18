@@ -3,7 +3,7 @@ import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
 import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
 import { badRequest, created, serverError } from "@/helpers/http-response";
 import {
-  hasInvalidFields,
+  hasUnexpectedFields,
   isValidBody,
   isValidEmail,
   isValidPassword,
@@ -20,7 +20,7 @@ export class CreateUserController {
 
       const { first_name, last_name, email, password, ...rest } = req.body;
 
-      if (hasInvalidFields(rest)) {
+      if (hasUnexpectedFields(rest)) {
         return badRequest(
           res,
           `Invalid request fields: ${Object.keys(rest).join(", ")}`,

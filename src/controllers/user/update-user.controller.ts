@@ -4,7 +4,7 @@ import { badRequest, ok, serverError } from "@/helpers/http-response";
 import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
 import { UserNotFoundError } from "@/errors/user-not-found.error";
 import {
-  hasInvalidFields,
+  hasUnexpectedFields,
   isValidBody,
   isValidEmail,
   isValidPassword,
@@ -27,7 +27,7 @@ export class UpdateUserController {
         return badRequest(res, "Invalid user ID");
       }
 
-      if (hasInvalidFields(rest)) {
+      if (hasUnexpectedFields(rest)) {
         return badRequest(
           res,
           `Invalid request fields: ${Object.keys(rest).join(", ")}`,
