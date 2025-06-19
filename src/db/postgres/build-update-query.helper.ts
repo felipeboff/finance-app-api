@@ -9,7 +9,7 @@ export function buildUpdateQuery(
   let index = 1;
 
   for (const [key, value] of entries) {
-    if (key !== idField) {
+    if (key !== idField && value !== undefined && value !== null) {
       fields.push(`${key} = $${index++}`);
       values.push(value);
     }
