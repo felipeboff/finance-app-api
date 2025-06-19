@@ -50,10 +50,10 @@ export class TransactionsPostgresRepository implements ITransactionRepository {
   async balance(id: string): Promise<UserBalanceDTO> {
     const result = await this.db(
       `SELECT
-      SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expense,
-      SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
-      SUM(CASE WHEN type = 'investment' THEN amount ELSE 0 END) AS investment,
-        (SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) -
+      SUM(CASE WHEN type = 'EXPENSE' THEN amount ELSE 0 END) AS expense,
+      SUM(CASE WHEN type = 'INCOME' THEN amount ELSE 0 END) AS income,
+      SUM(CASE WHEN type = 'INVESTMENT' THEN amount ELSE 0 END) AS investment,
+        (SUM(CASE WHEN type = 'EXPENSE' THEN amount ELSE 0 END) -
         SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) -
         SUM(CASE WHEN type = 'investment' THEN amount ELSE 0 END)) AS balance
       FROM transactions WHERE user_id = $1`,
