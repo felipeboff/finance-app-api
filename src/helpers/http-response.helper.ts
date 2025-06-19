@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { AppError } from "@/errors/app.error";
 
 export const badRequest = (res: Response, message: string) =>
   res.status(400).json({ error: message });
@@ -13,3 +14,6 @@ export const notFound = (res: Response, message = "Not found") =>
 
 export const serverError = (res: Response) =>
   res.status(500).json({ error: "Internal server error" });
+
+export const handleAppError = (res: Response, err: AppError) =>
+  res.status(err.statusCode).json({ error: err.message });
