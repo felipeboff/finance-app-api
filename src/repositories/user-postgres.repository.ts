@@ -15,14 +15,14 @@ export class UserPostgresRepository implements IUserRepository {
   }
 
   async create(user: CreateUserDTO): Promise<UserEntity> {
-    const id = crypto.randomUUID();
-
     await this.db(
       `INSERT INTO users (id, first_name, last_name, email, password) VALUES ($1, $2, $3, $4, $5)`,
-      [id, user.first_name, user.last_name, user.email, user.password],
+      [user.id, user.first_name, user.last_name, user.email, user.password],
     );
 
-    const result = await this.db("SELECT * FROM users WHERE id = $1", [id]);
+    const result = await this.db("SELECT * FROM users WHERE id = $1", [
+      user.id,
+    ]);
     return result.rows[0];
   }
 
