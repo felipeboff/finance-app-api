@@ -2,7 +2,7 @@ import { CreateTransactionDTO } from "@/dtos/transaction.dto";
 import { TransactionEntity } from "@/entities/transaction.entity";
 import { TransactionsPostgresRepository } from "@/repositories/transaction-postgres.repository";
 import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
-import { UserNotFoundError } from "@/errors/user-not-found.error";
+import { UserNotFoundError } from "@/errors/user.error";
 import { v4 as uuidv4 } from "uuid";
 
 export class CreateTransactionUseCase {

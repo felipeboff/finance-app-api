@@ -12,8 +12,11 @@ import {
   isValidUUID,
 } from "@/validators/shared.validator";
 import { isValidBody } from "@/validators/shared.validator";
-import { UserNotFoundError } from "@/errors/user-not-found.error";
-import { isValidTransactionType } from "@/validators/transactions.validator";
+import { UserNotFoundError } from "@/errors/user.error";
+import {
+  isValidAmount,
+  isValidTransactionType,
+} from "@/validators/transactions.validator";
 
 export class CreateTransactionController {
   constructor(private readonly useCase: CreateTransactionUseCase) {}
@@ -55,6 +58,10 @@ export class CreateTransactionController {
 
       if (!isValidTransactionType(type)) {
         return badRequest(res, "Invalid transaction type");
+      }
+
+      if (!isValidAmount(amount)) {
+        return badRequest(res, "Invalid amount");
       }
 
       const transaction = await this.useCase.execute({
