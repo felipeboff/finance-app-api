@@ -7,7 +7,7 @@ import {
 } from "@/helpers/http-response.helper";
 import { isValidUUID } from "@/validators/shared.validator";
 import { DeleteUserUseCase } from "@/use-cases/user/delete-user.usecase";
-import { UserNotFoundError } from "@/errors/user-not-found.error";
+import { UserNotFoundError } from "@/errors/user.error";
 
 export class DeleteUserController {
   constructor(private readonly useCase: DeleteUserUseCase) {}

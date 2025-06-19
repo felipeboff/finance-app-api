@@ -1,4 +1,4 @@
-import { UserNotFoundError } from "@/errors/user-not-found.error";
+import { UserNotFoundError } from "@/errors/user.error";
 import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
 
 export class DeleteUserUseCase {
