@@ -1,5 +1,4 @@
 import { CreateTransactionDTO } from "@/dtos/transaction.dto";
-import { TransactionEntity } from "@/entities/transaction.entity";
 import { TransactionsPostgresRepository } from "@/repositories/transaction-postgres.repository";
 import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
 import { UserNotFoundError } from "@/errors/user.error";
@@ -16,14 +15,13 @@ export class CreateTransactionUseCase {
 
     if (!userFound) throw new UserNotFoundError();
 
-    const transaction: TransactionEntity = {
+    const transaction: CreateTransactionDTO = {
       id: uuidv4(),
       user_id: input.user_id,
       title: input.title,
       date: input.date,
       amount: input.amount,
       type: input.type,
-      created_at: new Date(),
     };
 
     const result = await this.transactionRepo.create(transaction);

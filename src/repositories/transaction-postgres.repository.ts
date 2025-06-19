@@ -1,7 +1,13 @@
 import { query } from "@/db/postgres";
+import {
+  CreateTransactionDTO,
+  UpdateTransactionDTO,
+} from "@/dtos/transaction.dto";
+import { ITransactionRepository } from "./types/transaction.repository";
+import { buildUpdateQuery } from "../db/postgres/build-update-query.helper";
 import { TransactionEntity } from "@/entities/transaction.entity";
 
-export class TransactionsPostgresRepository {
+export class TransactionsPostgresRepository implements ITransactionRepository {
   constructor(private readonly db = query) {}
 
   async findAll(): Promise<TransactionEntity[]> {
@@ -9,42 +15,34 @@ export class TransactionsPostgresRepository {
     return result.rows;
   }
 
-  async create(transaction: TransactionEntity): Promise<TransactionEntity> {
-    await this.db(
-      `INSERT INTO transactions (id, user_id, title, date, amount, type) VALUES ($1, $2, $3, $4, $5, $6)`,
-      [
-        transaction.id,
-        transaction.user_id,
-        transaction.title,
-        transaction.date,
-        transaction.amount,
-        transaction.type,
-      ],
-    );
-
-    const result = await this.db("SELECT * FROM transactions WHERE id = $1", [
-      transaction.id,
-    ]);
-    return result.rows[0];
-  }
-
   async findById(id: string): Promise<TransactionEntity | null> {
     const result = await this.db("SELECT * FROM transactions WHERE id = $1", [
       id,
     ]);
+    return result.rows[0] || null;
+  }
+
+  async create(data: CreateTransactionDTO): Promise<TransactionEntity> {
+    await this.db(
+      `INSERT INTO transactions (id, user_id, title, date, amount, type) VALUES ($1, $2, $3, $4, $5, $6)`,
+      [data.id, data.user_id, data.title, data.date, data.amount, data.type],
+    );
+
+    const result = await this.db("SELECT * FROM transactions WHERE id = $1", [
+      data.id,
+    ]);
     return result.rows[0];
   }
 
-  async update(transaction: TransactionEntity): Promise<TransactionEntity> {
-    const result = await this.db(
-      `UPDATE transactions SET amount = $1, type = $2 WHERE id = $3 RETURNING *`,
-      [transaction.amount, transaction.type, transaction.id],
-    );
+  async update(data: UpdateTransactionDTO): Promise<TransactionEntity | null> {
+    const { query, values } = buildUpdateQuery("transactions", "id", data);
 
-    return result.rows[0];
+    const result = await this.db(query, values);
+
+    return result.rows[0] || null;
   }
 
   async delete(id: string): Promise<void> {
-    await this.db("DELETE FROM users WHERE id = $1", [id]);
+    await this.db("DELETE FROM transactions WHERE id = $1", [id]);
   }
 }
