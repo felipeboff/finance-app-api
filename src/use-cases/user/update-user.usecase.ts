@@ -1,7 +1,7 @@
 import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
-import { UserNotFoundError } from "@/errors/user-not-found.error";
+import { UserNotFoundError } from "@/errors/user.error";
 import { UserEntity } from "@/entities/user.entity";
-import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
+import { EmailAlreadyExistsError } from "@/errors/shared.error";
 import { hashPassword } from "@/services/hash.service";
 import { UpdateUserDTO } from "@/dtos/user.dto";
 
