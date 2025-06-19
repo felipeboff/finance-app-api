@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
+
+import { UserNotFoundError } from "@/errors/user.error";
 import {
   badRequest,
   notFound,
   ok,
   serverError,
 } from "@/helpers/http-response.helper";
-import { isValidUUID } from "@/validators/shared.validator";
 import { DeleteUserUseCase } from "@/use-cases/user/delete-user.usecase";
-import { UserNotFoundError } from "@/errors/user.error";
+import { isValidUUID } from "@/validators/shared.validator";
 
 export class DeleteUserController {
   constructor(private readonly useCase: DeleteUserUseCase) {}

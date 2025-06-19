@@ -1,8 +1,8 @@
-import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
+import { UpdateUserDTO } from "@/dtos/user.dto";
 import { UserNotFoundError } from "@/errors/user.error";
 import { EmailAlreadyExistsError } from "@/errors/user.error";
+import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
 import { hashPassword } from "@/services/hash.service";
-import { UpdateUserDTO } from "@/dtos/user.dto";
 
 export class UpdateUserUseCase {
   constructor(private readonly userRepo = new UserPostgresRepository()) {}

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
-import { UpdateUserUseCase } from "@/use-cases/user/update-user.usecase";
+
+import { EmailAlreadyExistsError } from "@/errors/user.error";
+import { UserNotFoundError } from "@/errors/user.error";
 import {
   badRequest,
   conflict,
@@ -7,8 +9,7 @@ import {
   ok,
   serverError,
 } from "@/helpers/http-response.helper";
-import { EmailAlreadyExistsError } from "@/errors/user.error";
-import { UserNotFoundError } from "@/errors/user.error";
+import { UpdateUserUseCase } from "@/use-cases/user/update-user.usecase";
 import {
   hasUnexpectedFields,
   isValidBody,

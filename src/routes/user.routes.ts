@@ -1,10 +1,10 @@
 import { Router } from "express";
 
 import { makeCreateUserController } from "@/factories/user/create-user.factory";
-import { makeGetUserByIdController } from "@/factories/user/get-user-by-id.factory";
-import { makeUpdateUserController } from "@/factories/user/update-user.factory";
 import { makeDeleteUserController } from "@/factories/user/delete-user.factory";
 import { makeGetAllUsersController } from "@/factories/user/get-all-users.factory";
+import { makeGetUserByIdController } from "@/factories/user/get-user-by-id.factory";
+import { makeUpdateUserController } from "@/factories/user/update-user.factory";
 
 const router = Router();
 

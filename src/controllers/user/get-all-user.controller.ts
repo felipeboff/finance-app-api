@@ -1,6 +1,7 @@
+import { Response } from "express";
+
 import { ok, serverError } from "@/helpers/http-response.helper";
 import { GetAllUsersUseCase } from "@/use-cases/user/get-all-users.usecase";
-import { Response } from "express";
 
 export class GetAllUserController {
   constructor(private readonly useCase: GetAllUsersUseCase) {}

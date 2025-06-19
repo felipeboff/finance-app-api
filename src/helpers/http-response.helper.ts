@@ -1,4 +1,5 @@
 import { Response } from "express";
+
 import { AppError } from "@/errors/app.error";
 
 export const ok = (res: Response, data: unknown) => res.status(200).json(data);

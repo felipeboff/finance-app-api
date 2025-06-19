@@ -1,4 +1,5 @@
 import { QueryResult } from "pg";
+
 import { pool } from "./pool";
 
 export const query = async (

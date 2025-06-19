@@ -5,7 +5,7 @@ export enum TransactionType {
 }
 
 export interface CreateTransactionDTO {
-  id: string;
+  id?: string;
   user_id: string;
   title: string;
   date: Date;

@@ -1,8 +1,8 @@
-import { TransactionEntity } from "@/entities/transaction.entity";
 import {
   CreateTransactionDTO,
   UpdateTransactionDTO,
 } from "@/dtos/transaction.dto";
+import { TransactionEntity } from "@/entities/transaction.entity";
 
 export interface ITransactionRepository {
   findAll(): Promise<TransactionEntity[]>;

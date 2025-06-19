@@ -1,8 +1,8 @@
 import { query } from "@/db/postgres";
-import { UserEntity } from "@/entities/user.entity";
-import { IUserRepository } from "./types/user.repository";
-import { CreateUserDTO, UpdateUserDTO } from "@/dtos/user.dto";
 import { buildUpdateQuery } from "@/db/postgres/build-update-query.helper";
+import { CreateUserDTO, UpdateUserDTO } from "@/dtos/user.dto";
+import { UserEntity } from "@/entities/user.entity";
+import { IUserRepository } from "@/repositories/types/user.repository";
 
 export class UserPostgresRepository implements IUserRepository {
   constructor(private readonly db = query) {}

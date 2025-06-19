@@ -1,11 +1,11 @@
 import { query } from "@/db/postgres";
+import { buildUpdateQuery } from "@/db/postgres/build-update-query.helper";
 import {
   CreateTransactionDTO,
   UpdateTransactionDTO,
 } from "@/dtos/transaction.dto";
-import { ITransactionRepository } from "./types/transaction.repository";
-import { buildUpdateQuery } from "../db/postgres/build-update-query.helper";
 import { TransactionEntity } from "@/entities/transaction.entity";
+import { ITransactionRepository } from "@/repositories/types/transaction.repository";
 
 export class TransactionsPostgresRepository implements ITransactionRepository {
   constructor(private readonly db = query) {}

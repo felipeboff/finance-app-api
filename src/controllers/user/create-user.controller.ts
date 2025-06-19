@@ -1,18 +1,19 @@
 import { Request, Response } from "express";
-import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
+
+import { EmailAlreadyExistsError } from "@/errors/user.error";
 import {
   badRequest,
   conflict,
   created,
   serverError,
 } from "@/helpers/http-response.helper";
+import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
 import {
   hasUnexpectedFields,
   isValidBody,
   isValidEmail,
   isValidPassword,
 } from "@/validators/shared.validator";
-import { EmailAlreadyExistsError } from "@/errors/user.error";
 
 export class CreateUserController {
   constructor(private readonly useCase: CreateUserUseCase) {}
