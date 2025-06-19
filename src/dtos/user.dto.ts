@@ -13,3 +13,11 @@ export interface UpdateUserDTO {
   email?: string;
   password?: string;
 }
+
+export interface UserBalanceDTO {
+  user_id: string;
+  expense: number;
+  income: number;
+  investment: number;
+  balance: number;
+}

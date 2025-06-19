@@ -1,4 +1,4 @@
-import { CreateUserDTO, UpdateUserDTO } from "@/dtos/user.dto";
+import { CreateUserDTO, UpdateUserDTO, UserBalanceDTO } from "@/dtos/user.dto";
 import { UserEntity } from "@/entities/user.entity";
 
 export interface IUserRepository {
@@ -8,4 +8,5 @@ export interface IUserRepository {
   findAll(): Promise<UserEntity[]>;
   update(data: UpdateUserDTO): Promise<UserEntity | null>;
   delete(id: string): Promise<void>;
+  balance(id: string): Promise<UserBalanceDTO>;
 }

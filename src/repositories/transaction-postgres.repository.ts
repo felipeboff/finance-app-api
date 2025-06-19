@@ -4,6 +4,7 @@ import {
   CreateTransactionDTO,
   UpdateTransactionDTO,
 } from "@/dtos/transaction.dto";
+import { UserBalanceDTO } from "@/dtos/user.dto";
 import { TransactionEntity } from "@/entities/transaction.entity";
 import { ITransactionRepository } from "@/repositories/types/transaction.repository";
 
@@ -44,5 +45,20 @@ export class TransactionsPostgresRepository implements ITransactionRepository {
 
   async delete(id: string): Promise<void> {
     await this.db("DELETE FROM transactions WHERE id = $1", [id]);
+  }
+
+  async balance(id: string): Promise<UserBalanceDTO> {
+    const result = await this.db(
+      `SELECT
+      SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS expense,
+      SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income,
+      SUM(CASE WHEN type = 'investment' THEN amount ELSE 0 END) AS investment,
+        (SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) -
+        SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) -
+        SUM(CASE WHEN type = 'investment' THEN amount ELSE 0 END)) AS balance
+      FROM transactions WHERE user_id = $1`,
+      [id],
+    );
+    return result.rows[0];
   }
 }
