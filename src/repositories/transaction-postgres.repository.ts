@@ -59,6 +59,6 @@ export class TransactionsPostgresRepository implements ITransactionRepository {
       FROM transactions WHERE user_id = $1`,
       [id],
     );
-    return result.rows[0];
+    return { ...result.rows[0], user_id: id };
   }
 }
