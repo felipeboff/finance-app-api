@@ -23,7 +23,7 @@ export class DeleteTransactionController {
 
       await this.useCase.execute(transactionId);
 
-      return ok(res, "Transaction deleted successfully");
+      return ok(res);
     } catch (err) {
       if (err instanceof TransactionNotFoundError) {
         return notFound(res, err.message);

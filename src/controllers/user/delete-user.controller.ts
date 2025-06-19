@@ -23,7 +23,7 @@ export class DeleteUserController {
 
       await this.useCase.execute(userId);
 
-      return ok(res, "User deleted successfully");
+      return ok(res);
     } catch (err) {
       if (err instanceof UserNotFoundError) {
         return notFound(res, err.message);
