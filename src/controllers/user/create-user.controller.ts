@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
-import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
 import {
   badRequest,
   created,
+  handleAppError,
   serverError,
 } from "@/helpers/http-response.helper";
 import {
@@ -12,6 +12,7 @@ import {
   isValidEmail,
   isValidPassword,
 } from "@/validators/shared.validator";
+import { AppError } from "@/errors/app.error";
 
 export class CreateUserController {
   constructor(private readonly useCase: CreateUserUseCase) {}
@@ -63,8 +64,8 @@ export class CreateUserController {
 
       return created(res, createdUser);
     } catch (err) {
-      if (err instanceof EmailAlreadyExistsError) {
-        return badRequest(res, err.message);
+      if (err instanceof AppError) {
+        return handleAppError(res, err);
       }
 
       console.error(err);

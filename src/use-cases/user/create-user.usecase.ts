@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { CreateUserDTO } from "@/dtos/user.dto";
-import { EmailAlreadyExistsError } from "@/errors/email-already-exists.error";
+import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
 import { hashPassword } from "@/services/hash.service";
 
@@ -8,8 +8,8 @@ export class CreateUserUseCase {
   constructor(private readonly userRepo = new UserPostgresRepository()) {}
 
   async execute(input: CreateUserDTO) {
-    const exists = await this.userRepo.findByEmail(input.email);
-    if (exists) throw new EmailAlreadyExistsError(input.email);
+    const userExists = await this.userRepo.findByEmail(input.email);
+    if (userExists) throw new EmailAlreadyExistsError();
 
     const user = {
       id: uuidv4(),
