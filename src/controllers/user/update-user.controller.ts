@@ -1,7 +1,13 @@
 import { Request, Response } from "express";
 import { UpdateUserUseCase } from "@/use-cases/user/update-user.usecase";
-import { badRequest, ok, serverError } from "@/helpers/http-response.helper";
-import { EmailAlreadyExistsError } from "@/errors/shared.error";
+import {
+  badRequest,
+  conflict,
+  notFound,
+  ok,
+  serverError,
+} from "@/helpers/http-response.helper";
+import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { UserNotFoundError } from "@/errors/user.error";
 import {
   hasUnexpectedFields,
@@ -55,16 +61,16 @@ export class UpdateUserController {
       }
 
       return ok(res, updatedUser);
-    } catch (error) {
-      if (error instanceof EmailAlreadyExistsError) {
-        return badRequest(res, error.message);
+    } catch (err) {
+      if (err instanceof EmailAlreadyExistsError) {
+        return conflict(res, err.message);
       }
 
-      if (error instanceof UserNotFoundError) {
-        return badRequest(res, error.message);
+      if (err instanceof UserNotFoundError) {
+        return notFound(res, err.message);
       }
 
-      console.error(error);
+      console.error(err);
       return serverError(res);
     }
   }
