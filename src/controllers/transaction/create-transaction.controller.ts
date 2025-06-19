@@ -64,7 +64,7 @@ export class CreateTransactionController {
         return badRequest(res, "Invalid amount");
       }
 
-      const transaction = await this.useCase.execute({
+      const transactionCreated = await this.useCase.execute({
         user_id,
         title,
         date,
@@ -72,11 +72,11 @@ export class CreateTransactionController {
         type,
       });
 
-      if (!transaction) {
+      if (!transactionCreated) {
         return badRequest(res, "Failed to create transaction");
       }
 
-      return created(res, transaction);
+      return created(res, transactionCreated);
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         return badRequest(res, error.message);
