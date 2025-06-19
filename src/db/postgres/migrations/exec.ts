@@ -11,13 +11,21 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const exec = async () => {
-  const scriptPath = join(__dirname, "01-init.sql");
-  const script = fs.readFileSync(scriptPath, "utf8");
-
   const client = await pool.connect();
+  const files = fs
+    .readdirSync(__dirname)
+    .filter((file) => file.endsWith(".sql"));
+
   try {
-    await client.query(script);
-    console.log("Migration executed successfully");
+    for (const file of files) {
+      const scriptPath = join(__dirname, file);
+      const script = fs.readFileSync(scriptPath, "utf8");
+
+      await client.query(script);
+      console.log(`Migration ${file} executed successfully`);
+    }
+
+    console.log("All migrations executed successfully");
   } finally {
     client.release();
   }
