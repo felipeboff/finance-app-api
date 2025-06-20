@@ -3,6 +3,7 @@
     "dtos",
     "plpgsql",
     "postgres",
+    "postgresql",
     "typname",
     "usecase",
     "usecases",
