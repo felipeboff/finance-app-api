@@ -9,7 +9,6 @@ import {
 } from "@/helpers/http-response.helper";
 import { createTransactionSchema } from "@/schema/transaction.schema";
 import { CreateTransactionUseCase } from "@/use-cases/transaction/create-transaction.usecase";
-import { isValidAmount } from "@/validators/transactions.validator";
 
 export class CreateTransactionController {
   constructor(private readonly useCase: CreateTransactionUseCase) {}
@@ -17,10 +16,6 @@ export class CreateTransactionController {
   async execute(req: Request, res: Response): Promise<Response> {
     try {
       const input = await createTransactionSchema.parseAsync(req.body);
-
-      if (!isValidAmount(input.amount)) {
-        return badRequest(res, "Invalid amount");
-      }
 
       const transactionCreated = await this.useCase.execute({
         ...input,
