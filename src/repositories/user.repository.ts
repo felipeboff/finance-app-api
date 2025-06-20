@@ -51,8 +51,8 @@ export class UserPostgresRepository implements IUserRepository {
       and(
         eq(transactions.user_id, id),
         eq(transactions.type, type),
-        gte(transactions.date, new Date("2025-01-01")),
-        lte(transactions.date, new Date("2025-01-31")),
+        gte(transactions.date, new Date("2020-01-01")),
+        lte(transactions.date, new Date("2030-12-31")),
       );
 
     const sumAmount = async (type: TransactionType): Promise<number> => {
