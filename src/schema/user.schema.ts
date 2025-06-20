@@ -4,15 +4,18 @@ export const createUserSchema = z
   .object({
     first_name: z
       .string({ required_error: "First name is required" })
+      .trim()
       .nonempty("First name is required"),
     last_name: z
       .string({ required_error: "Last name is required" })
+      .trim()
       .nonempty("Last name is required"),
     email: z
       .string({ required_error: "Email is required" })
       .email("Invalid email address"),
     password: z
       .string({ required_error: "Password is required" })
+      .trim()
       .min(6, "Password must be at least 6 characters long"),
   })
   .strict();
