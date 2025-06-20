@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ZodError } from "zod";
 
 import { EmailAlreadyExistsError } from "@/errors/user.error";
 import {
@@ -7,56 +8,23 @@ import {
   created,
   serverError,
 } from "@/helpers/http-response.helper";
+import { createUserSchema } from "@/schema/user.schema";
 import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
-import {
-  hasUnexpectedFields,
-  isValidBody,
-  isValidEmail,
-  isValidPassword,
-} from "@/validators/shared.validator";
 
 export class CreateUserController {
   constructor(private readonly useCase: CreateUserUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {
-      if (!isValidBody(req.body)) {
-        return badRequest(res, "Request body is empty");
-      }
+      const input = req.body;
 
-      const { first_name, last_name, email, password, ...rest } = req.body;
-
-      if (hasUnexpectedFields(rest)) {
-        return badRequest(
-          res,
-          `Invalid request fields: ${Object.keys(rest).join(", ")}`,
-        );
-      }
-
-      const missing = [];
-
-      if (!first_name?.trim()) missing.push("first_name");
-      if (!last_name?.trim()) missing.push("last_name");
-      if (!email?.trim()) missing.push("email");
-      if (!password?.trim()) missing.push("password");
-
-      if (missing.length) {
-        return badRequest(res, `Missing fields: ${missing.join(", ")}`);
-      }
-
-      if (!isValidEmail(email)) {
-        return badRequest(res, "Invalid email");
-      }
-
-      if (!isValidPassword(password)) {
-        return badRequest(res, "Password too short (min 6)");
-      }
+      await createUserSchema.parseAsync(input);
 
       const createdUser = await this.useCase.execute({
-        first_name,
-        last_name,
-        email,
-        password,
+        first_name: input.first_name,
+        last_name: input.last_name,
+        email: input.email,
+        password: input.password,
       });
 
       if (!createdUser) {
@@ -65,6 +33,13 @@ export class CreateUserController {
 
       return created(res, createdUser);
     } catch (err) {
+      if (err instanceof ZodError) {
+        return badRequest(
+          res,
+          err.errors.map((error) => error.message).join(", "),
+        );
+      }
+
       if (err instanceof EmailAlreadyExistsError) {
         return conflict(res, err.message);
       }
