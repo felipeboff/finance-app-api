@@ -7,8 +7,8 @@ export const createTransactionSchema = z
     user_id: z.string({ required_error: "User ID is required" }).uuid(),
     amount: z
       .number({ required_error: "Amount is required" })
-      .refine((val) => Math.floor(val * 100) === val * 100, {
-        message: "Amount must have at most two decimal places",
+      .refine((val) => Number.isInteger(val), {
+        message: "Amount must be an integer",
       }),
     type: z.nativeEnum(TransactionType, {
       required_error: "Type is required",

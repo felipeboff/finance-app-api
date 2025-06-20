@@ -1,5 +1,5 @@
 import { TransactionNotFoundError } from "@/errors/transaction.error";
-import { TransactionsPostgresRepository } from "@/repositories/transaction-postgres.repository";
+import { TransactionsPostgresRepository } from "@/repositories/transaction.repository";
 
 export class DeleteTransactionUseCase {
   constructor(

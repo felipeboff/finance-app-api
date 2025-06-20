@@ -1,4 +1,4 @@
-import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
+import { UserPostgresRepository } from "@/repositories/user.repository";
 
 export class GetUserBalanceUseCase {
   constructor(private readonly userRepo = new UserPostgresRepository()) {}

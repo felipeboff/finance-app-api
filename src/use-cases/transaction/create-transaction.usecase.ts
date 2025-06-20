@@ -2,8 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import { CreateTransactionDTO } from "@/dtos/transaction.dto";
 import { UserNotFoundError } from "@/errors/user.error";
-import { TransactionsPostgresRepository } from "@/repositories/transaction-postgres.repository";
-import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
+import { TransactionsPostgresRepository } from "@/repositories/transaction.repository";
+import { UserPostgresRepository } from "@/repositories/user.repository";
 
 export class CreateTransactionUseCase {
   constructor(

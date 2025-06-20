@@ -16,8 +16,11 @@ export interface UpdateUserDTO {
 
 export interface UserBalanceDTO {
   user_id: string;
-  expense: number;
-  income: number;
-  investment: number;
+  expenses: number;
+  earnings: number;
+  investments: number;
+  earnings_percentage: number;
+  expenses_percentage: number;
+  investments_percentage: number;
   balance: number;
 }

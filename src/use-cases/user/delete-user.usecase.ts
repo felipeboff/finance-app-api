@@ -1,5 +1,5 @@
 import { UserNotFoundError } from "@/errors/user.error";
-import { UserPostgresRepository } from "@/repositories/user-postgres.repository";
+import { UserPostgresRepository } from "@/repositories/user.repository";
 
 export class DeleteUserUseCase {
   constructor(private readonly userRepo = new UserPostgresRepository()) {}

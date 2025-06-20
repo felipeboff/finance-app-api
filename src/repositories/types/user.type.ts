@@ -7,6 +7,6 @@ export interface IUserRepository {
   findById(id: string): Promise<UserEntity | null>;
   findAll(): Promise<UserEntity[]>;
   update(data: UpdateUserDTO): Promise<UserEntity | null>;
-  delete(id: string): Promise<void>;
+  delete(id: string): Promise<boolean>;
   balance(id: string): Promise<UserBalanceDTO>;
 }
