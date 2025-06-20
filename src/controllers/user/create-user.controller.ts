@@ -16,15 +16,10 @@ export class CreateUserController {
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {
-      const input = req.body;
-
-      await createUserSchema.parseAsync(input);
+      const input = await createUserSchema.parseAsync(req.body);
 
       const createdUser = await this.useCase.execute({
-        first_name: input.first_name,
-        last_name: input.last_name,
-        email: input.email,
-        password: input.password,
+        ...input,
       });
 
       if (!createdUser) {
