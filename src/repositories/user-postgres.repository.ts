@@ -1,6 +1,6 @@
 import { query } from "@/db/postgres";
 import { buildUpdateQuery } from "@/db/postgres/build-update-query.helper";
-import { CreateUserDTO, UpdateUserDTO } from "@/dtos/user.dto";
+import { CreateUserDTO, UpdateUserDTO, UserBalanceDTO } from "@/dtos/user.dto";
 import { UserEntity } from "@/entities/user.entity";
 import { IUserRepository } from "@/repositories/types/user.repository";
 
@@ -44,5 +44,10 @@ export class UserPostgresRepository implements IUserRepository {
   async findAll(): Promise<UserEntity[]> {
     const result = await this.db("SELECT * FROM users");
     return result.rows;
+  }
+
+  async balance(id: string): Promise<UserBalanceDTO> {
+    const result = await this.db(`SELECT * FROM get_user_balance($1)`, [id]);
+    return { user_id: id, ...result.rows[0] };
   }
 }

@@ -3,6 +3,7 @@ import { Router } from "express";
 import { makeCreateUserController } from "@/factories/user/create-user.factory";
 import { makeDeleteUserController } from "@/factories/user/delete-user.factory";
 import { makeGetAllUsersController } from "@/factories/user/get-all-users.factory";
+import { makeGetUserBalanceController } from "@/factories/user/get-user-balance.factory";
 import { makeGetUserByIdController } from "@/factories/user/get-user-by-id.factory";
 import { makeUpdateUserController } from "@/factories/user/update-user.factory";
 
@@ -23,6 +24,9 @@ router.patch("/:userId", async (req, res) => {
 });
 router.delete("/:userId", async (req, res) => {
   await makeDeleteUserController().execute(req, res);
+});
+router.get("/:userId/balance", async (req, res) => {
+  await makeGetUserBalanceController().execute(req, res);
 });
 
 export default router;
