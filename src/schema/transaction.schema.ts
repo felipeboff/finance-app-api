@@ -17,10 +17,7 @@ export const createTransactionSchema = z
       .string({ required_error: "Title is required" })
       .trim()
       .nonempty("Title is required"),
-    date: z.preprocess(
-      (val) => (typeof val === "string" ? new Date(val) : val),
-      z.date({ required_error: "Date is required" }),
-    ),
+    date: z.coerce.date({ required_error: "Date is required" }),
   })
   .strict();
 
