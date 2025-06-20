@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "datasource",
     "dtos",
     "plpgsql",
     "postgres",
@@ -7,9 +8,10 @@
     "typname",
     "usecase",
     "usecases",
+    "uuid",
     "uuidv"
   ],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   }
 }
