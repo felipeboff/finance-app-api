@@ -1,9 +1,7 @@
-import { TransactionsPostgresRepository } from "@/repositories/transaction.repository";
+import { ITransactionRepository } from "@/repositories/types/transaction.type";
 
 export class GetAllTransactionsUseCase {
-  constructor(
-    private readonly transactionRepo = new TransactionsPostgresRepository(),
-  ) {}
+  constructor(private readonly transactionRepo: ITransactionRepository) {}
 
   async execute() {
     const transactions = await this.transactionRepo.findAll();

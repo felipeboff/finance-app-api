@@ -1,10 +1,8 @@
 import { TransactionNotFoundError } from "@/errors/transaction.error";
-import { TransactionsPostgresRepository } from "@/repositories/transaction.repository";
+import { ITransactionRepository } from "@/repositories/types/transaction.type";
 
 export class DeleteTransactionUseCase {
-  constructor(
-    private readonly transactionRepo = new TransactionsPostgresRepository(),
-  ) {}
+  constructor(private readonly transactionRepo: ITransactionRepository) {}
 
   async execute(transactionId: string) {
     const transactionExists =

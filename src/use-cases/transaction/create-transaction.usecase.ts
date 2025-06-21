@@ -2,13 +2,13 @@ import { v4 as uuidv4 } from "uuid";
 
 import { CreateTransactionDTO } from "@/dtos/transaction.dto";
 import { UserNotFoundError } from "@/errors/user.error";
-import { TransactionsPostgresRepository } from "@/repositories/transaction.repository";
-import { UserPostgresRepository } from "@/repositories/user.repository";
+import { ITransactionRepository } from "@/repositories/types/transaction.type";
+import { IUserRepository } from "@/repositories/types/user.type";
 
 export class CreateTransactionUseCase {
   constructor(
-    private readonly transactionRepo = new TransactionsPostgresRepository(),
-    private readonly userRepo = new UserPostgresRepository(),
+    private readonly transactionRepo: ITransactionRepository,
+    private readonly userRepo: IUserRepository,
   ) {}
 
   async execute(input: CreateTransactionDTO) {
