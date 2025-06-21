@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 
+import { ICreateUserController } from "@/controllers/user/user.type";
 import { EmailAlreadyExistsError } from "@/errors/user.error";
 import {
   badRequest,
@@ -9,10 +10,10 @@ import {
   serverError,
 } from "@/helpers/http-response.helper";
 import { createUserSchema } from "@/schema/user.schema";
-import { CreateUserUseCase } from "@/use-cases/user/create-user.usecase";
+import { ICreateUserUseCase } from "@/use-cases/user/user.type";
 
-export class CreateUserController {
-  constructor(private readonly useCase: CreateUserUseCase) {}
+export class CreateUserController implements ICreateUserController {
+  constructor(private readonly useCase: ICreateUserUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 
+import { IUpdateUserController } from "@/controllers/user/user.type";
 import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { UserNotFoundError } from "@/errors/user.error";
 import {
@@ -11,11 +12,11 @@ import {
   serverError,
 } from "@/helpers/http-response.helper";
 import { updateUserSchema } from "@/schema/user.schema";
-import { UpdateUserUseCase } from "@/use-cases/user/update-user.usecase";
+import { IUpdateUserUseCase } from "@/use-cases/user/user.type";
 import { isValidUUID } from "@/validators/shared.validator";
 
-export class UpdateUserController {
-  constructor(private readonly useCase: UpdateUserUseCase) {}
+export class UpdateUserController implements IUpdateUserController {
+  constructor(private readonly useCase: IUpdateUserUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {

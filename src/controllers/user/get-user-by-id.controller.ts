@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
 
+import { IGetUserByIdController } from "@/controllers/user/user.type";
 import {
   badRequest,
   notFound,
   ok,
   serverError,
 } from "@/helpers/http-response.helper";
-import { GetUserByIdUseCase } from "@/use-cases/user/get-user-by-id.usecase";
+import { IGetUserByIdUseCase } from "@/use-cases/user/user.type";
 import { isValidUUID } from "@/validators/shared.validator";
 
-export class GetUserByIdController {
-  constructor(private readonly useCase: GetUserByIdUseCase) {}
+export class GetUserByIdController implements IGetUserByIdController {
+  constructor(private readonly useCase: IGetUserByIdUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {

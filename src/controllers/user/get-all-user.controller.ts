@@ -1,10 +1,11 @@
 import { Response } from "express";
 
+import { IGetAllUsersController } from "@/controllers/user/user.type";
 import { ok, serverError } from "@/helpers/http-response.helper";
-import { GetAllUsersUseCase } from "@/use-cases/user/get-all-users.usecase";
+import { IGetAllUsersUseCase } from "@/use-cases/user/user.type";
 
-export class GetAllUserController {
-  constructor(private readonly useCase: GetAllUsersUseCase) {}
+export class GetAllUserController implements IGetAllUsersController {
+  constructor(private readonly useCase: IGetAllUsersUseCase) {}
 
   async execute(res: Response): Promise<Response> {
     try {

@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
 
+import { IGetUserBalanceController } from "@/controllers/user/user.type";
 import {
   badRequest,
   notFound,
   ok,
   serverError,
 } from "@/helpers/http-response.helper";
-import { GetUserBalanceUseCase } from "@/use-cases/user/get-user-balance.usecase";
+import { IGetUserBalanceUseCase } from "@/use-cases/user/user.type";
 import { isValidUUID } from "@/validators/shared.validator";
 
-export class GetUserBalanceController {
-  constructor(private readonly useCase: GetUserBalanceUseCase) {}
+export class GetUserBalanceController implements IGetUserBalanceController {
+  constructor(private readonly useCase: IGetUserBalanceUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {
