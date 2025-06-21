@@ -4,7 +4,7 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest --watch --silent",
     "prepare": "husky",
     "dev": "tsx watch src/server.ts",
     "migrations": "tsx src/db/postgres/migrations/exec.ts"
