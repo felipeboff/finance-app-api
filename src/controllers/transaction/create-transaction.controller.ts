@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 
+import { ICreateTransactionController } from "@/controllers/transaction/transaction.type";
 import { UserNotFoundError } from "@/errors/user.error";
 import {
   badRequest,
@@ -8,10 +9,12 @@ import {
   serverError,
 } from "@/helpers/http-response.helper";
 import { createTransactionSchema } from "@/schema/transaction.schema";
-import { CreateTransactionUseCase } from "@/use-cases/transaction/create-transaction.usecase";
+import { ICreateTransactionUseCase } from "@/use-cases/transaction/transaction.type";
 
-export class CreateTransactionController {
-  constructor(private readonly useCase: CreateTransactionUseCase) {}
+export class CreateTransactionController
+  implements ICreateTransactionController
+{
+  constructor(private readonly useCase: ICreateTransactionUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {

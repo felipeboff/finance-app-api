@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 
+import { IDeleteTransactionController } from "@/controllers/transaction/transaction.type";
 import { TransactionNotFoundError } from "@/errors/transaction.error";
 import {
   badRequest,
@@ -7,11 +8,13 @@ import {
   ok,
   serverError,
 } from "@/helpers/http-response.helper";
-import { DeleteTransactionUseCase } from "@/use-cases/transaction/delete-transaction.usecase";
+import { IDeleteTransactionUseCase } from "@/use-cases/transaction/transaction.type";
 import { isValidUUID } from "@/validators/shared.validator";
 
-export class DeleteTransactionController {
-  constructor(private readonly useCase: DeleteTransactionUseCase) {}
+export class DeleteTransactionController
+  implements IDeleteTransactionController
+{
+  constructor(private readonly useCase: IDeleteTransactionUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {

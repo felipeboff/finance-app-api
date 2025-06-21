@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 
+import { IUpdateTransactionController } from "@/controllers/transaction/transaction.type";
 import { TransactionNotFoundError } from "@/errors/transaction.error";
 import {
   badRequest,
@@ -8,11 +9,13 @@ import {
   serverError,
 } from "@/helpers/http-response.helper";
 import { updateTransactionSchema } from "@/schema/transaction.schema";
-import { UpdateTransactionUseCase } from "@/use-cases/transaction/update-transaction.usecase";
+import { IUpdateTransactionUseCase } from "@/use-cases/transaction/transaction.type";
 import { isValidUUID } from "@/validators/shared.validator";
 
-export class UpdateTransactionController {
-  constructor(private readonly useCase: UpdateTransactionUseCase) {}
+export class UpdateTransactionController
+  implements IUpdateTransactionController
+{
+  constructor(private readonly useCase: IUpdateTransactionUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {

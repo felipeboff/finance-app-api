@@ -1,10 +1,13 @@
 import { Response } from "express";
 
+import { IGetAllTransactionsController } from "@/controllers/transaction/transaction.type";
 import { ok, serverError } from "@/helpers/http-response.helper";
-import { GetAllTransactionsUseCase } from "@/use-cases/transaction/get-all-transactions.usecase";
+import { IGetAllTransactionsUseCase } from "@/use-cases/transaction/transaction.type";
 
-export class GetAllTransactionsController {
-  constructor(private readonly useCase: GetAllTransactionsUseCase) {}
+export class GetAllTransactionsController
+  implements IGetAllTransactionsController
+{
+  constructor(private readonly useCase: IGetAllTransactionsUseCase) {}
 
   async execute(res: Response): Promise<Response> {
     try {

@@ -1,16 +1,19 @@
 import { Request, Response } from "express";
 
+import { IGetTransactionByIdController } from "@/controllers/transaction/transaction.type";
 import {
   badRequest,
   notFound,
   ok,
   serverError,
 } from "@/helpers/http-response.helper";
-import { GetTransactionByIdUseCase } from "@/use-cases/transaction/get-by-id-transaction.usecase";
+import { IGetTransactionByIdUseCase } from "@/use-cases/transaction/transaction.type";
 import { isValidUUID } from "@/validators/shared.validator";
 
-export class GetTransactionByIdController {
-  constructor(private readonly useCase: GetTransactionByIdUseCase) {}
+export class GetTransactionByIdController
+  implements IGetTransactionByIdController
+{
+  constructor(private readonly useCase: IGetTransactionByIdUseCase) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
     try {
