@@ -60,4 +60,21 @@ describe("CreateUserController", () => {
 
     expect(status).toHaveBeenCalledWith(400);
   });
+
+  it("should respond with 400 if last_name is not provided", async () => {
+    const req = {
+      body: {
+        first_name: faker.person.firstName(),
+        email: faker.internet.email(),
+        password: faker.internet.password({ length: 10 }),
+      },
+    } as Request;
+
+    const { res, status } = mockResponse();
+
+    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(400);
+  });
 });
