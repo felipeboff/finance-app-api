@@ -14,7 +14,7 @@ const mockResponse = () => {
 
 describe("CreateUserController", () => {
   class CreateUserUseCaseStub implements ICreateUserUseCase {
-    async execute(data: CreateUserDTO): Promise<UserEntity> {
+    async execute(data: CreateUserDTO): Promise<UserEntity | null> {
       return {
         ...data,
         id: faker.string.uuid(),
