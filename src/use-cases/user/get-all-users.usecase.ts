@@ -1,9 +1,11 @@
-import { UserPostgresRepository } from "@/repositories/user.repository";
+import { UserEntity } from "@/entities/user.entity";
+import { IUserRepository } from "@/repositories/types/user.type";
+import { IGetAllUsersUseCase } from "@/use-cases/user/user.type";
 
-export class GetAllUsersUseCase {
-  constructor(private readonly userRepo = new UserPostgresRepository()) {}
+export class GetAllUsersUseCase implements IGetAllUsersUseCase {
+  constructor(private readonly userRepo: IUserRepository) {}
 
-  async execute() {
+  async execute(): Promise<UserEntity[]> {
     const users = await this.userRepo.findAll();
     return users;
   }

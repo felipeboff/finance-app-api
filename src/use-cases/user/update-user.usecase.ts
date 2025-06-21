@@ -1,12 +1,15 @@
 import { UpdateUserDTO } from "@/dtos/user.dto";
+import { UserEntity } from "@/entities/user.entity";
 import { UserNotFoundError } from "@/errors/user.error";
 import { EmailAlreadyExistsError } from "@/errors/user.error";
-import { UserPostgresRepository } from "@/repositories/user.repository";
+import { IUserRepository } from "@/repositories/types/user.type";
 import { hashPassword } from "@/services/hash.service";
+import { IUpdateUserUseCase } from "@/use-cases/user/user.type";
 
-export class UpdateUserUseCase {
-  constructor(private readonly userRepo = new UserPostgresRepository()) {}
-  async execute(input: UpdateUserDTO) {
+export class UpdateUserUseCase implements IUpdateUserUseCase {
+  constructor(private readonly userRepo: IUserRepository) {}
+
+  async execute(input: UpdateUserDTO): Promise<UserEntity | null> {
     const user = await this.userRepo.findById(input.id);
     if (!user) throw new UserNotFoundError();
 
