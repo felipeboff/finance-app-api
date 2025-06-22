@@ -147,4 +147,29 @@ describe("CreateUserController", () => {
 
     expect(status).toHaveBeenCalledWith(400);
   });
+
+  it("should call CreateUserUseCase with correct data", async () => {
+    const req = {
+      body: {
+        first_name: faker.person.firstName(),
+        last_name: faker.person.lastName(),
+        email: faker.internet.email(),
+        password: faker.internet.password({ length: 10 }),
+      },
+    } as Request;
+
+    const { res, status, json } = mockResponse();
+
+    const useCase = new CreateUserUseCaseStub();
+    const executeSpy = jest.spyOn(useCase, "execute");
+
+    const controller = new CreateUserController(useCase);
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(201);
+    expect(json).toHaveBeenCalledWith(
+      expect.objectContaining({ id: expect.any(String) }),
+    );
+    expect(executeSpy).toHaveBeenCalledWith(req.body);
+  });
 });
