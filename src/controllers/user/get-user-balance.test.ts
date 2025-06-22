@@ -57,4 +57,37 @@ describe("GetUserBalanceController", () => {
 
     expect(status).toHaveBeenCalledWith(200);
   });
+
+  it("should return 400 if user id is invalid", async () => {
+    const { controller } = createSut();
+    const req = mockRequest();
+    req.params.userId = "invalid-user-id";
+    const { res, status } = mockResponse();
+
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(400);
+  });
+
+  it("should return 404 if user balance is not found", async () => {
+    const { controller, useCase } = createSut();
+    const req = mockRequest();
+    const { res, status } = mockResponse();
+
+    jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(404);
+  });
+
+  it("should return 500 if an error occurs", async () => {
+    const { controller, useCase } = createSut();
+    const req = mockRequest();
+    const { res, status } = mockResponse();
+
+    jest.spyOn(useCase, "execute").mockRejectedValueOnce(new Error("Error"));
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(500);
+  });
 });
