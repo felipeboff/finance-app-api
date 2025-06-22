@@ -43,10 +43,9 @@ describe("CreateUserController", () => {
 
   it("should respond with 201 and created user", async () => {
     const req = mockRequest();
-
     const { res, status, json } = mockResponse();
-
     const { controller } = createSut();
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(201);
@@ -58,10 +57,9 @@ describe("CreateUserController", () => {
   it("should respond with 400 if first_name is not provided", async () => {
     const req = mockRequest();
     req.body.first_name = undefined;
-
     const { res, status } = mockResponse();
-
     const { controller } = createSut();
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
@@ -70,10 +68,9 @@ describe("CreateUserController", () => {
   it("should respond with 400 if last_name is not provided", async () => {
     const req = mockRequest();
     req.body.last_name = undefined;
-
     const { res, status } = mockResponse();
-
     const { controller } = createSut();
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
@@ -82,10 +79,9 @@ describe("CreateUserController", () => {
   it("should respond with 400 if email is not provided", async () => {
     const req = mockRequest();
     req.body.email = undefined;
-
     const { res, status } = mockResponse();
-
     const { controller } = createSut();
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
@@ -94,10 +90,9 @@ describe("CreateUserController", () => {
   it("should respond with 400 if password is not provided", async () => {
     const req = mockRequest();
     req.body.password = undefined;
-
     const { res, status } = mockResponse();
-
     const { controller } = createSut();
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
@@ -106,10 +101,9 @@ describe("CreateUserController", () => {
   it("should respond with 400 if password length is less than 6 characters", async () => {
     const req = mockRequest();
     req.body.password = faker.internet.password({ length: 5 });
-
     const { res, status } = mockResponse();
-
     const { controller } = createSut();
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
@@ -118,10 +112,9 @@ describe("CreateUserController", () => {
   it("invalid email format", async () => {
     const req = mockRequest();
     req.body.email = "invalid-email";
-
     const { res, status } = mockResponse();
-
     const { controller } = createSut();
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
@@ -129,12 +122,10 @@ describe("CreateUserController", () => {
 
   it("should call CreateUserUseCase with correct data", async () => {
     const req = mockRequest();
-
     const { res, status, json } = mockResponse();
-
     const { useCase, controller } = createSut();
-    const executeSpy = jest.spyOn(useCase, "execute");
 
+    const executeSpy = jest.spyOn(useCase, "execute");
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(201);
@@ -146,14 +137,12 @@ describe("CreateUserController", () => {
 
   it("should return 409 if CreateUserUseCase throws EmailAlreadyExistsError", async () => {
     const req = mockRequest();
-
     const { res, status } = mockResponse();
-
     const { useCase, controller } = createSut();
+
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
       throw new EmailAlreadyExistsError();
     });
-
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(409);
