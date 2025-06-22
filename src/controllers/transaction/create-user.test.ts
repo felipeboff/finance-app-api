@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { CreateUserController } from "@/controllers/user/create-user.controller";
 import { CreateUserDTO } from "@/dtos/user.dto";
 import { UserEntity } from "@/entities/user.entity";
+import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { ICreateUserUseCase } from "@/use-cases/user/user.type";
 
 const mockResponse = () => {
@@ -171,5 +172,28 @@ describe("CreateUserController", () => {
       expect.objectContaining({ id: expect.any(String) }),
     );
     expect(executeSpy).toHaveBeenCalledWith(req.body);
+  });
+
+  it("should return 409 if CreateUserUseCase throws EmailAlreadyExistsError", async () => {
+    const req = {
+      body: {
+        first_name: faker.person.firstName(),
+        last_name: faker.person.lastName(),
+        email: faker.internet.email(),
+        password: faker.internet.password({ length: 10 }),
+      },
+    } as Request;
+
+    const { res, status } = mockResponse();
+
+    const useCase = new CreateUserUseCaseStub();
+    jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
+      throw new EmailAlreadyExistsError();
+    });
+
+    const controller = new CreateUserController(useCase);
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(409);
   });
 });
