@@ -7,12 +7,6 @@ import { UserEntity } from "@/entities/user.entity";
 import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { ICreateUserUseCase } from "@/use-cases/user/user.type";
 
-const mockResponse = () => {
-  const json = jest.fn();
-  const status = jest.fn(() => ({ json }));
-  return { res: { status } as unknown as Response, status, json };
-};
-
 describe("CreateUserController", () => {
   class CreateUserUseCaseStub implements ICreateUserUseCase {
     async execute(data: CreateUserDTO): Promise<UserEntity | null> {
@@ -24,8 +18,20 @@ describe("CreateUserController", () => {
     }
   }
 
-  it("should respond with 201 and created user", async () => {
-    const req = {
+  const createSut = () => {
+    const useCase = new CreateUserUseCaseStub();
+    const controller = new CreateUserController(useCase);
+    return { useCase, controller };
+  };
+
+  const mockResponse = () => {
+    const json = jest.fn();
+    const status = jest.fn(() => ({ json }));
+    return { res: { status } as unknown as Response, status, json };
+  };
+
+  const mockRequest = () => {
+    return {
       body: {
         first_name: faker.person.firstName(),
         last_name: faker.person.lastName(),
@@ -33,10 +39,14 @@ describe("CreateUserController", () => {
         password: faker.internet.password({ length: 10 }),
       },
     } as Request;
+  };
+
+  it("should respond with 201 and created user", async () => {
+    const req = mockRequest();
 
     const { res, status, json } = mockResponse();
 
-    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    const { controller } = createSut();
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(201);
@@ -46,125 +56,85 @@ describe("CreateUserController", () => {
   });
 
   it("should respond with 400 if first_name is not provided", async () => {
-    const req = {
-      body: {
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 10 }),
-      },
-    } as Request;
+    const req = mockRequest();
+    req.body.first_name = undefined;
 
     const { res, status } = mockResponse();
 
-    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    const { controller } = createSut();
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
   });
 
   it("should respond with 400 if last_name is not provided", async () => {
-    const req = {
-      body: {
-        first_name: faker.person.firstName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 10 }),
-      },
-    } as Request;
+    const req = mockRequest();
+    req.body.last_name = undefined;
 
     const { res, status } = mockResponse();
 
-    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    const { controller } = createSut();
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
   });
 
   it("should respond with 400 if email is not provided", async () => {
-    const req = {
-      body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        password: faker.internet.password({ length: 10 }),
-      },
-    } as Request;
+    const req = mockRequest();
+    req.body.email = undefined;
 
     const { res, status } = mockResponse();
 
-    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    const { controller } = createSut();
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
   });
 
   it("should respond with 400 if password is not provided", async () => {
-    const req = {
-      body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-      },
-    } as Request;
+    const req = mockRequest();
+    req.body.password = undefined;
 
     const { res, status } = mockResponse();
 
-    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    const { controller } = createSut();
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
   });
 
   it("should respond with 400 if password length is less than 6 characters", async () => {
-    const req = {
-      body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 5 }),
-      },
-    } as Request;
+    const req = mockRequest();
+    req.body.password = faker.internet.password({ length: 5 });
 
     const { res, status } = mockResponse();
 
-    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    const { controller } = createSut();
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
   });
 
   it("invalid email format", async () => {
-    const req = {
-      body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: "invalid-email",
-        password: faker.internet.password({ length: 10 }),
-      },
-    } as Request;
+    const req = mockRequest();
+    req.body.email = "invalid-email";
 
     const { res, status } = mockResponse();
 
-    const controller = new CreateUserController(new CreateUserUseCaseStub());
+    const { controller } = createSut();
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
   });
 
   it("should call CreateUserUseCase with correct data", async () => {
-    const req = {
-      body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 10 }),
-      },
-    } as Request;
+    const req = mockRequest();
 
     const { res, status, json } = mockResponse();
 
-    const useCase = new CreateUserUseCaseStub();
+    const { useCase, controller } = createSut();
     const executeSpy = jest.spyOn(useCase, "execute");
 
-    const controller = new CreateUserController(useCase);
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(201);
@@ -175,23 +145,15 @@ describe("CreateUserController", () => {
   });
 
   it("should return 409 if CreateUserUseCase throws EmailAlreadyExistsError", async () => {
-    const req = {
-      body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 10 }),
-      },
-    } as Request;
+    const req = mockRequest();
 
     const { res, status } = mockResponse();
 
-    const useCase = new CreateUserUseCaseStub();
+    const { useCase, controller } = createSut();
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
       throw new EmailAlreadyExistsError();
     });
 
-    const controller = new CreateUserController(useCase);
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(409);
