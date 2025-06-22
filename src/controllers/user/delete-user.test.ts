@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker/locale/pt_BR";
 import { Request, Response } from "express";
 
 import { DeleteUserController } from "@/controllers/user/delete-user.controller";
+import { UserNotFoundError } from "@/errors/user.error";
 import { IDeleteUserUseCase } from "@/use-cases/user/user.type";
 
 describe("DeleteUserController", () => {
@@ -58,5 +59,18 @@ describe("DeleteUserController", () => {
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
+  });
+
+  it("should return 404 if user is not found", async () => {
+    const { controller, useCase } = createSut();
+    const req = mockRequest();
+    const { res, status } = mockResponse();
+
+    jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
+      throw new UserNotFoundError();
+    });
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(404);
   });
 });
