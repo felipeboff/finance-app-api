@@ -85,7 +85,7 @@ describe("GetUserBalanceController", () => {
     const req = mockRequest();
     const { res, status } = mockResponse();
 
-    jest.spyOn(useCase, "execute").mockRejectedValueOnce(new Error("Error"));
+    jest.spyOn(useCase, "execute").mockRejectedValueOnce(new Error());
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(500);
