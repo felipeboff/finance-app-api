@@ -10,6 +10,7 @@ const config: Config = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>/",
   }),
+  collectCoverageFrom: ["src/**/*.ts"],
 };
 
 export default config;

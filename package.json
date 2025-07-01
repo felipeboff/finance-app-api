@@ -4,10 +4,11 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "test": "jest --watch --silent",
-    "prepare": "husky",
-    "dev": "tsx watch src/server.ts",
-    "migrations": "tsx src/db/postgres/migrations/exec.ts"
+    "test": "jest --passWithNoTests --silent",
+    "test:watch": "jest --watch --passWithNoTests --silent",
+    "test:coverage": "jest --coverage --passWithNoTests --silent",
+    "start:dev": "tsx watch src/server.ts",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
