@@ -20,9 +20,7 @@ export class CreateTransactionController
     try {
       const input = await createTransactionSchema.parseAsync(req.body);
 
-      const transactionCreated = await this.useCase.execute({
-        ...input,
-      });
+      const transactionCreated = await this.useCase.execute(input);
 
       if (!transactionCreated) {
         return badRequest(res, "Failed to create transaction");
