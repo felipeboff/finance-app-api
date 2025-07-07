@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 
-import { IUpdateUserController } from "@/controllers/user/user.type";
+import { IUpdateUserController } from "@/controllers/types/user.type";
 import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { UserNotFoundError } from "@/errors/user.error";
 import {

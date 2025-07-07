@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { IDeleteUserController } from "@/controllers/user/user.type";
+import { IDeleteUserController } from "@/controllers/types/user.type";
 import { UserNotFoundError } from "@/errors/user.error";
 import {
   badRequest,

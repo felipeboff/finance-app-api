@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { IGetUserBalanceController } from "@/controllers/user/user.type";
+import { IGetUserBalanceController } from "@/controllers/types/user.type";
 import {
   badRequest,
   notFound,

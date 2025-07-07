@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { IGetUserByIdController } from "@/controllers/user/user.type";
+import { IGetUserByIdController } from "@/controllers/types/user.type";
 import {
   badRequest,
   notFound,

@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-import { IGetAllUsersController } from "@/controllers/user/user.type";
+import { IGetAllUsersController } from "@/controllers/types/user.type";
 import { ok, serverError } from "@/helpers/http-response.helper";
 import { IGetAllUsersUseCase } from "@/use-cases/user/user.type";
 
