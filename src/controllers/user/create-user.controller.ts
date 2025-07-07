@@ -19,9 +19,7 @@ export class CreateUserController implements ICreateUserController {
     try {
       const input = await createUserSchema.parseAsync(req.body);
 
-      const createdUser = await this.useCase.execute({
-        ...input,
-      });
+      const createdUser = await this.useCase.execute(input);
 
       if (!createdUser) {
         return badRequest(res, "Failed to create user");
