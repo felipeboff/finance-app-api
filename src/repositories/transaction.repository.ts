@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { db } from "@/db";
 import { transactions } from "@/db/schema/transactions";
 import {
   CreateTransactionDTO,
@@ -10,14 +10,16 @@ import { TransactionEntity } from "@/entities/transaction.entity";
 import { ITransactionRepository } from "@/repositories/types/transaction.type";
 
 export class TransactionsPostgresRepository implements ITransactionRepository {
+  constructor(private readonly db: NodePgDatabase) {}
+
   async findAll(): Promise<TransactionEntity[]> {
-    const rows = await db.select().from(transactions);
+    const rows = await this.db.select().from(transactions);
 
     return rows;
   }
 
   async findById(id: string): Promise<TransactionEntity | null> {
-    const [result] = await db
+    const [result] = await this.db
       .select()
       .from(transactions)
       .where(eq(transactions.id, id));
@@ -26,12 +28,15 @@ export class TransactionsPostgresRepository implements ITransactionRepository {
   }
 
   async create(data: CreateTransactionDTO): Promise<TransactionEntity> {
-    const [result] = await db.insert(transactions).values(data).returning();
+    const [result] = await this.db
+      .insert(transactions)
+      .values(data)
+      .returning();
 
     return result;
   }
   async update(data: UpdateTransactionDTO): Promise<TransactionEntity | null> {
-    const [result] = await db
+    const [result] = await this.db
       .update(transactions)
       .set(data)
       .where(eq(transactions.id, data.id))
@@ -41,7 +46,7 @@ export class TransactionsPostgresRepository implements ITransactionRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const result = await db
+    const result = await this.db
       .delete(transactions)
       .where(eq(transactions.id, id))
       .returning();

@@ -1,6 +1,6 @@
 import { and, eq, gte, lte } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { db } from "@/db";
 import { transactions } from "@/db/schema/transactions";
 import { users } from "@/db/schema/users";
 import { TransactionType } from "@/dtos/transaction.dto";
@@ -9,8 +9,10 @@ import { UserEntity } from "@/entities/user.entity";
 import { IUserRepository } from "@/repositories/types/user.type";
 
 export class UserPostgresRepository implements IUserRepository {
+  constructor(private readonly db: NodePgDatabase) {}
+
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const [result] = await db
+    const [result] = await this.db
       .select()
       .from(users)
       .where(eq(users.email, email));
@@ -18,17 +20,17 @@ export class UserPostgresRepository implements IUserRepository {
   }
 
   async create(user: CreateUserDTO): Promise<UserEntity> {
-    const [result] = await db.insert(users).values(user).returning();
+    const [result] = await this.db.insert(users).values(user).returning();
     return result;
   }
 
   async findById(id: string): Promise<UserEntity | null> {
-    const [result] = await db.select().from(users).where(eq(users.id, id));
+    const [result] = await this.db.select().from(users).where(eq(users.id, id));
     return result;
   }
 
   async update(data: UpdateUserDTO): Promise<UserEntity | null> {
-    const [result] = await db
+    const [result] = await this.db
       .update(users)
       .set(data)
       .where(eq(users.id, data.id))
@@ -37,12 +39,15 @@ export class UserPostgresRepository implements IUserRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const result = await db.delete(users).where(eq(users.id, id)).returning();
+    const result = await this.db
+      .delete(users)
+      .where(eq(users.id, id))
+      .returning();
     return result.length > 0;
   }
 
   async findAll(): Promise<UserEntity[]> {
-    const result = await db.select().from(users);
+    const result = await this.db.select().from(users);
     return result;
   }
 
@@ -56,7 +61,7 @@ export class UserPostgresRepository implements IUserRepository {
       );
 
     const sumAmount = async (type: TransactionType): Promise<number> => {
-      const rows = await db
+      const rows = await this.db
         .select({ amount: transactions.amount })
         .from(transactions)
         .where(filters(type));
