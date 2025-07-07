@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-import { IGetAllTransactionsController } from "@/controllers/transaction/transaction.type";
+import { IGetAllTransactionsController } from "@/controllers/types/transaction.type";
 import { ok, serverError } from "@/helpers/http-response.helper";
 import { IGetAllTransactionsUseCase } from "@/use-cases/transaction/transaction.type";
 

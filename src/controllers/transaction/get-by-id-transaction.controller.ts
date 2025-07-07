@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { IGetTransactionByIdController } from "@/controllers/transaction/transaction.type";
+import { IGetTransactionByIdController } from "@/controllers/types/transaction.type";
 import {
   badRequest,
   notFound,

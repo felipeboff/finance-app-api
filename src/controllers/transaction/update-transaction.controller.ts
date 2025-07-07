@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { IUpdateTransactionController } from "@/controllers/transaction/transaction.type";
+import { IUpdateTransactionController } from "@/controllers/types/transaction.type";
 import { TransactionNotFoundError } from "@/errors/transaction.error";
 import {
   badRequest,

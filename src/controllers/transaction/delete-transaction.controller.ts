@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { IDeleteTransactionController } from "@/controllers/transaction/transaction.type";
+import { IDeleteTransactionController } from "@/controllers/types/transaction.type";
 import { TransactionNotFoundError } from "@/errors/transaction.error";
 import {
   badRequest,

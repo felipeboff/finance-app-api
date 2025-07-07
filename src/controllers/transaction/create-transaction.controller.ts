@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 
-import { ICreateTransactionController } from "@/controllers/transaction/transaction.type";
+import { ICreateTransactionController } from "@/controllers/types/transaction.type";
 import { UserNotFoundError } from "@/errors/user.error";
 import {
   badRequest,
