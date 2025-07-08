@@ -40,7 +40,7 @@ describe("DeleteUserController", () => {
     } as unknown as Request;
   };
 
-  it("should return 200 if user is deleted", async () => {
+  it("should return 200 when user is successfully deleted", async () => {
     const { controller } = createSut();
     const req = mockRequest();
     const { res, status } = mockResponse();
@@ -50,7 +50,7 @@ describe("DeleteUserController", () => {
     expect(status).toHaveBeenCalledWith(200);
   });
 
-  it("should return 400 if invalid user id is provided", async () => {
+  it("should return 400 when userId param is invalid", async () => {
     const { controller } = createSut();
     const req = mockRequest();
     req.params.userId = "invalid-user-id";
@@ -61,7 +61,7 @@ describe("DeleteUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("should return 404 if user is not found", async () => {
+  it("should return 404 when user is not found", async () => {
     const { controller, useCase } = createSut();
     const req = mockRequest();
     const { res, status } = mockResponse();
@@ -72,5 +72,19 @@ describe("DeleteUserController", () => {
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(404);
+  });
+
+  it("should return 500 when use case throws unknown error", async () => {
+    const { controller, useCase } = createSut();
+    const req = mockRequest();
+    const { res, status } = mockResponse();
+
+    jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(500);
   });
 });
