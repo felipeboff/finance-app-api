@@ -41,7 +41,7 @@ describe("CreateUserController", () => {
     } as Request;
   };
 
-  it("should respond with 201 and created user", async () => {
+  it("should return 201 with created user when input is valid", async () => {
     const req = mockRequest();
     const { res, status, json } = mockResponse();
     const { controller } = createSut();
@@ -54,7 +54,7 @@ describe("CreateUserController", () => {
     );
   });
 
-  it("should respond with 400 if first_name is not provided", async () => {
+  it("should return 400 when first_name is missing", async () => {
     const req = mockRequest();
     req.body.first_name = undefined;
     const { res, status } = mockResponse();
@@ -65,7 +65,7 @@ describe("CreateUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("should respond with 400 if last_name is not provided", async () => {
+  it("should return 400 when last_name is missing", async () => {
     const req = mockRequest();
     req.body.last_name = undefined;
     const { res, status } = mockResponse();
@@ -76,7 +76,7 @@ describe("CreateUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("should respond with 400 if email is not provided", async () => {
+  it("should return 400 when email is missing", async () => {
     const req = mockRequest();
     req.body.email = undefined;
     const { res, status } = mockResponse();
@@ -87,7 +87,7 @@ describe("CreateUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("should respond with 400 if password is not provided", async () => {
+  it("should return 400 when password is missing", async () => {
     const req = mockRequest();
     req.body.password = undefined;
     const { res, status } = mockResponse();
@@ -98,7 +98,7 @@ describe("CreateUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("should respond with 400 if password length is less than 6 characters", async () => {
+  it("should return 400 when password is too short", async () => {
     const req = mockRequest();
     req.body.password = faker.internet.password({ length: 5 });
     const { res, status } = mockResponse();
@@ -109,7 +109,7 @@ describe("CreateUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("invalid email format", async () => {
+  it("should return 400 when email is invalid", async () => {
     const req = mockRequest();
     req.body.email = "invalid-email";
     const { res, status } = mockResponse();
@@ -120,7 +120,7 @@ describe("CreateUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("should call CreateUserUseCase with correct data", async () => {
+  it("should call use case with correct data when input is valid", async () => {
     const req = mockRequest();
     const { res, status, json } = mockResponse();
     const { useCase, controller } = createSut();
@@ -135,7 +135,7 @@ describe("CreateUserController", () => {
     expect(executeSpy).toHaveBeenCalledWith(req.body);
   });
 
-  it("should return 409 if CreateUserUseCase throws EmailAlreadyExistsError", async () => {
+  it("should return 409 when email already exists", async () => {
     const req = mockRequest();
     const { res, status } = mockResponse();
     const { useCase, controller } = createSut();
@@ -146,5 +146,34 @@ describe("CreateUserController", () => {
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(409);
+  });
+
+  it("should return 500 when use case throws unknown error", async () => {
+    const req = mockRequest();
+    const { res, status } = mockResponse();
+    const { useCase, controller } = createSut();
+
+    jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(500);
+  });
+
+  it("should return 400 when user creation fails", async () => {
+    const req = mockRequest();
+    const { res, status, json } = mockResponse();
+
+    const { controller, useCase } = createSut();
+    jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
+
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(json).toHaveBeenCalledWith(
+      expect.objectContaining({ error: "Failed to create user" }),
+    );
   });
 });
