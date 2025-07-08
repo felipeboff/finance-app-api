@@ -9,7 +9,7 @@ import {
 import { TransactionEntity } from "@/entities/transaction.entity";
 import { ITransactionRepository } from "@/repositories/types/transaction.type";
 
-export class TransactionsPostgresRepository implements ITransactionRepository {
+export class TransactionsRepository implements ITransactionRepository {
   constructor(private readonly db: NodePgDatabase) {}
 
   async findAll(): Promise<TransactionEntity[]> {
