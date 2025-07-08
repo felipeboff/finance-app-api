@@ -8,7 +8,7 @@ import { CreateUserDTO, UpdateUserDTO, UserBalanceDTO } from "@/dtos/user.dto";
 import { UserEntity } from "@/entities/user.entity";
 import { IUserRepository } from "@/repositories/types/user.type";
 
-export class UserPostgresRepository implements IUserRepository {
+export class UserRepository implements IUserRepository {
   constructor(private readonly db: NodePgDatabase) {}
 
   async findByEmail(email: string): Promise<UserEntity | null> {
