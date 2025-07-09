@@ -8,6 +8,9 @@ export interface ITransactionRepository {
   findAll(): Promise<TransactionEntity[]>;
   findById(id: string): Promise<TransactionEntity | null>;
   create(data: CreateTransactionDTO): Promise<TransactionEntity>;
-  update(data: UpdateTransactionDTO): Promise<TransactionEntity | null>;
+  update(
+    data: UpdateTransactionDTO,
+    transactionId: string,
+  ): Promise<TransactionEntity | null>;
   delete(id: string): Promise<boolean>;
 }

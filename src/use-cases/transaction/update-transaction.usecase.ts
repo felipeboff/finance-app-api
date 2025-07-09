@@ -5,17 +5,10 @@ import { ITransactionRepository } from "@/repositories/types/transaction.type";
 export class UpdateTransactionUseCase {
   constructor(private readonly transactionRepo: ITransactionRepository) {}
 
-  async execute(input: UpdateTransactionDTO) {
-    const transaction = await this.transactionRepo.findById(input.id);
+  async execute(transactionId: string, input: UpdateTransactionDTO) {
+    const transaction = await this.transactionRepo.findById(transactionId);
     if (!transaction) throw new TransactionNotFoundError();
 
-    const safeUpdateValue: UpdateTransactionDTO = {
-      ...input,
-      id: transaction.id,
-    };
-
-    console.log(safeUpdateValue);
-
-    return await this.transactionRepo.update(safeUpdateValue);
+    return await this.transactionRepo.update(input, transactionId);
   }
 }

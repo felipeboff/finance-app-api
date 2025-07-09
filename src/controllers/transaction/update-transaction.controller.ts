@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { IUpdateTransactionController } from "@/controllers/types/transaction.type";
+import { UpdateTransactionDTO } from "@/dtos/transaction.dto";
 import { TransactionNotFoundError } from "@/errors/transaction.error";
 import {
   badRequest,
@@ -25,9 +26,13 @@ export class UpdateTransactionController
         return badRequest(res, "Invalid transaction ID");
       }
 
-      const input = await updateTransactionSchema.parseAsync(req.body);
+      const input: UpdateTransactionDTO =
+        await updateTransactionSchema.parseAsync(req.body);
 
-      const updatedTransaction = await this.useCase.execute(input);
+      const updatedTransaction = await this.useCase.execute(
+        transactionId,
+        input,
+      );
 
       if (!updatedTransaction) {
         return badRequest(res, "Failed to update transaction");

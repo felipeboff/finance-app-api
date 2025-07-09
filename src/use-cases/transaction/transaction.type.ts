@@ -13,7 +13,10 @@ export interface IGetAllTransactionsUseCase {
 }
 
 export interface IUpdateTransactionUseCase {
-  execute(input: UpdateTransactionDTO): Promise<TransactionEntity | null>;
+  execute(
+    transactionId: string,
+    input: UpdateTransactionDTO,
+  ): Promise<TransactionEntity | null>;
 }
 
 export interface IDeleteTransactionUseCase {

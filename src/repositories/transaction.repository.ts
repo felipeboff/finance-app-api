@@ -35,11 +35,14 @@ export class TransactionsRepository implements ITransactionRepository {
 
     return result;
   }
-  async update(data: UpdateTransactionDTO): Promise<TransactionEntity | null> {
+  async update(
+    data: UpdateTransactionDTO,
+    transactionId: string,
+  ): Promise<TransactionEntity | null> {
     const [result] = await this.db
       .update(transactions)
       .set(data)
-      .where(eq(transactions.id, data.id))
+      .where(eq(transactions.id, transactionId))
       .returning();
 
     return result;
