@@ -14,7 +14,6 @@ export interface CreateTransactionDTO {
 }
 
 export interface UpdateTransactionDTO {
-  id: string;
   title?: string;
   date?: Date;
   amount?: number;
