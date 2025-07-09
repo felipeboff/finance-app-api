@@ -11,24 +11,24 @@ import {
 import { IUpdateUserUseCase } from "@/use-cases/user/user.type";
 
 describe("UpdateUserController", () => {
-  const userId = faker.string.uuid();
-  const user: UpdateUserDTO = {
+  const user: UserEntity = {
+    id: faker.string.uuid(),
     first_name: faker.person.firstName(),
     last_name: faker.person.lastName(),
     email: faker.internet.email(),
     password: faker.internet.password({ length: 8 }),
+    created_at: new Date(),
   };
 
   class UpdateUserUseCaseStub implements IUpdateUserUseCase {
-    async execute(data: UpdateUserDTO): Promise<UserEntity | null> {
+    async execute(
+      userId: string,
+      data: UpdateUserDTO,
+    ): Promise<UserEntity | null> {
       return {
+        ...user,
         ...data,
         id: userId,
-        first_name: data.first_name ?? user.first_name!,
-        last_name: data.last_name ?? user.last_name!,
-        email: data.email ?? user.email!,
-        password: data.password ?? user.password!,
-        created_at: new Date(),
       };
     }
   }
@@ -48,14 +48,14 @@ describe("UpdateUserController", () => {
   const mockRequest = () => {
     return {
       params: {
-        userId,
+        userId: user.id,
       },
       body: {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
         password: user.password,
-      },
+      } as UpdateUserDTO,
     } as unknown as Request;
   };
 
@@ -151,10 +151,7 @@ describe("UpdateUserController", () => {
     expect(json).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
     );
-    expect(executeSpy).toHaveBeenCalledWith({
-      ...req.body,
-      id: req.params.userId,
-    });
+    expect(executeSpy).toHaveBeenCalledWith(req.params.userId, req.body);
   });
 
   it("should return 409 when UpdateUserUseCase throws EmailAlreadyExistsError", async () => {
@@ -206,7 +203,7 @@ describe("UpdateUserController", () => {
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
-      throw new Error("Unexpected");
+      throw new Error();
     });
 
     await controller.execute(req, res);
