@@ -31,14 +31,14 @@ describe("CreateUserController", () => {
   };
 
   const mockRequest = () => {
-    return {
-      body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 10 }),
-      },
-    } as Request;
+    const body: CreateUserDTO = {
+      first_name: faker.person.firstName(),
+      last_name: faker.person.lastName(),
+      email: faker.internet.email(),
+      password: faker.internet.password({ length: 10 }),
+    };
+
+    return { body } as Request;
   };
 
   it("should return 201 with created user when input is valid", async () => {

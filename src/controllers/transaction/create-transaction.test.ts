@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker/locale/pt_BR";
 import { Request, Response } from "express";
 
 import { CreateTransactionController } from "@/controllers/transaction/create-transaction.controller";
-import { CreateTransactionDTO } from "@/dtos/transaction.dto";
+import { CreateTransactionDTO, TransactionType } from "@/dtos/transaction.dto";
 import { TransactionEntity } from "@/entities/transaction.entity";
 import { UserNotFoundError } from "@/errors/user.error";
 import { ICreateTransactionUseCase } from "@/use-cases/transaction/transaction.type";
@@ -33,15 +33,21 @@ describe("CreateTransactionController", () => {
   };
 
   const mockRequest = (): Request => {
-    return {
-      body: {
-        user_id: faker.string.uuid(),
-        amount: faker.number.int({ min: 1, max: 1000 }),
-        title: faker.lorem.sentence(),
-        date: new Date(),
-        type: faker.helpers.arrayElement(["EARNING", "EXPENSE", "INVESTMENT"]),
-      },
-    } as Request;
+    const type = faker.helpers.arrayElement([
+      TransactionType.EARNING,
+      TransactionType.EXPENSE,
+      TransactionType.INVESTMENT,
+    ]);
+
+    const body: CreateTransactionDTO = {
+      user_id: faker.string.uuid(),
+      amount: faker.number.int({ min: 1, max: 1000 }),
+      title: faker.lorem.sentence(),
+      date: new Date(),
+      type,
+    };
+
+    return { body } as Request;
   };
 
   it("should return 201 with created transaction when input is valid", async () => {

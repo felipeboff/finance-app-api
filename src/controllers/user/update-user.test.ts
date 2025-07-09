@@ -46,16 +46,18 @@ describe("UpdateUserController", () => {
   };
 
   const mockRequest = () => {
+    const body: UpdateUserDTO = {
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      password: user.password,
+    };
+
     return {
       params: {
         userId: user.id,
       },
-      body: {
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        password: user.password,
-      } as UpdateUserDTO,
+      body,
     } as unknown as Request;
   };
 

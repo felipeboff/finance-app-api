@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker/locale/pt_BR";
 import { Request, Response } from "express";
 
 import { UpdateTransactionController } from "@/controllers/transaction/update-transaction.controller";
-import { UpdateTransactionDTO } from "@/dtos/transaction.dto";
+import { TransactionType, UpdateTransactionDTO } from "@/dtos/transaction.dto";
 import { TransactionEntity } from "@/entities/transaction.entity";
 import { TransactionNotFoundError } from "@/errors/transaction.error";
 import { IUpdateTransactionUseCase } from "@/use-cases/transaction/transaction.type";
@@ -44,16 +44,24 @@ describe("CreateTransactionController", () => {
   };
 
   const mockRequest = (): Request => {
+    const type = faker.helpers.arrayElement([
+      TransactionType.EARNING,
+      TransactionType.EXPENSE,
+      TransactionType.INVESTMENT,
+    ]);
+
+    const body: UpdateTransactionDTO = {
+      amount: faker.number.int({ min: 1, max: 1000 }),
+      title: faker.lorem.sentence(),
+      date: new Date(),
+      type,
+    };
+
     return {
       params: {
         transactionId: transactionFaker.id,
       },
-      body: {
-        amount: faker.number.int({ min: 1, max: 1000 }),
-        title: faker.lorem.sentence(),
-        date: new Date(),
-        type: faker.helpers.arrayElement(["EARNING", "EXPENSE", "INVESTMENT"]),
-      } as UpdateTransactionDTO,
+      body,
     } as unknown as Request;
   };
 
