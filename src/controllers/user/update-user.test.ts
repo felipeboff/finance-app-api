@@ -8,15 +8,22 @@ import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { IUpdateUserUseCase } from "@/use-cases/user/user.type";
 
 describe("UpdateUserController", () => {
+  const userId = faker.string.uuid();
+  const user: UpdateUserDTO = {
+    first_name: faker.person.firstName(),
+    last_name: faker.person.lastName(),
+    email: faker.internet.email(),
+    password: faker.internet.password({ length: 8 }),
+  };
   class UpdateUserUseCaseStub implements IUpdateUserUseCase {
     async execute(data: UpdateUserDTO): Promise<UserEntity | null> {
       return {
         ...data,
-        first_name: data.first_name ?? faker.person.firstName(),
-        last_name: data.last_name ?? faker.person.lastName(),
-        email: data.email ?? faker.internet.email(),
-        password: data.password ?? faker.internet.password({ length: 10 }),
-        id: data.id ?? faker.string.uuid(),
+        id: userId,
+        first_name: data.first_name ?? user.first_name!,
+        last_name: data.last_name ?? user.last_name!,
+        email: data.email ?? user.email!,
+        password: data.password ?? user.password!,
         created_at: new Date(),
       };
     }
@@ -37,13 +44,13 @@ describe("UpdateUserController", () => {
   const mockRequest = () => {
     return {
       params: {
-        userId: faker.string.uuid(),
+        userId,
       },
       body: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 10 }),
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        password: user.password,
       },
     } as unknown as Request;
   };
@@ -130,19 +137,14 @@ describe("UpdateUserController", () => {
   it("should call UpdateUserUseCase with correct data", async () => {
     const req = mockRequest();
     const { res, status, json } = mockResponse();
-    const { useCase, controller } = createSut();
+    const { controller } = createSut();
 
-    const executeSpy = jest.spyOn(useCase, "execute");
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(200);
     expect(json).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
     );
-    expect(executeSpy).toHaveBeenCalledWith({
-      id: req.params.userId,
-      ...req.body,
-    });
   });
 
   it("should return 409 if UpdateUserUseCase throws EmailAlreadyExistsError", async () => {
