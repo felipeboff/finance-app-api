@@ -62,7 +62,7 @@ describe("CreateTransactionController", () => {
         transactionId: transactionFaker.id,
       },
       body,
-    } as unknown as Request;
+    } as Partial<Request> as Request;
   };
 
   it("should respond with 200 and updated transaction", async () => {

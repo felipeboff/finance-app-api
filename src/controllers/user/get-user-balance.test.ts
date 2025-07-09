@@ -45,7 +45,7 @@ describe("GetUserBalanceController", () => {
       params: {
         userId: faker.string.uuid(),
       },
-    } as unknown as Request;
+    } as Partial<Request> as Request;
   };
 
   it("should return 200 if user balance is found", async () => {

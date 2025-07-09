@@ -38,7 +38,7 @@ describe("GetUserByIdController", () => {
       params: {
         userId: user.id,
       },
-    } as unknown as Request;
+    } as Partial<Request> as Request;
   };
 
   it("should return 400 when userId param is invalid", async () => {

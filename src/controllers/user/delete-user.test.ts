@@ -37,7 +37,7 @@ describe("DeleteUserController", () => {
       params: {
         userId: faker.string.uuid(),
       },
-    } as unknown as Request;
+    } as Partial<Request> as Request;
   };
 
   it("should return 200 when user is successfully deleted", async () => {
