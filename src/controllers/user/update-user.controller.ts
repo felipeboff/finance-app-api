@@ -28,10 +28,7 @@ export class UpdateUserController implements IUpdateUserController {
 
       const input = await updateUserSchema.parseAsync(req.body);
 
-      const updatedUser = await this.useCase.execute({
-        id: userId,
-        ...input,
-      });
+      const updatedUser = await this.useCase.execute(input);
 
       if (!updatedUser) {
         return badRequest(res, "Failed to update user");
