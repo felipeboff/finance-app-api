@@ -4,7 +4,10 @@ import { Request, Response } from "express";
 import { UpdateUserController } from "@/controllers/user/update-user.controller";
 import { UpdateUserDTO } from "@/dtos/user.dto";
 import { UserEntity } from "@/entities/user.entity";
-import { EmailAlreadyExistsError } from "@/errors/user.error";
+import {
+  EmailAlreadyExistsError,
+  UserNotFoundError,
+} from "@/errors/user.error";
 import { IUpdateUserUseCase } from "@/use-cases/user/user.type";
 
 describe("UpdateUserController", () => {
@@ -158,5 +161,56 @@ describe("UpdateUserController", () => {
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(409);
+  });
+
+  it("should return 400 when invalid id", async () => {
+    const req = mockRequest();
+    req.params.userId = "invalid-uuid";
+    const { res, status } = mockResponse();
+    const { controller } = createSut();
+
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(400);
+  });
+
+  it("should return 404 if UpdateUserUseCase not found user", async () => {
+    const req = mockRequest();
+    const { res, status, json } = mockResponse();
+    const { useCase, controller } = createSut();
+
+    jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(json).toHaveBeenCalledWith({
+      error: "Failed to update user",
+    });
+  });
+
+  it("should return 404 if UpdateUserUseCase throws UserNotFoundError", async () => {
+    const req = mockRequest();
+    const { res, status } = mockResponse();
+    const { useCase, controller } = createSut();
+
+    jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
+      throw new UserNotFoundError();
+    });
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(404);
+  });
+
+  it("should return 500 when use case throws unexpected error", async () => {
+    const req = mockRequest();
+    const { res, status } = mockResponse();
+    const { useCase, controller } = createSut();
+
+    jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await controller.execute(req, res);
+
+    expect(status).toHaveBeenCalledWith(500);
   });
 });
