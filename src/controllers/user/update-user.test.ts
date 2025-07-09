@@ -18,6 +18,7 @@ describe("UpdateUserController", () => {
     email: faker.internet.email(),
     password: faker.internet.password({ length: 8 }),
   };
+
   class UpdateUserUseCaseStub implements IUpdateUserUseCase {
     async execute(data: UpdateUserDTO): Promise<UserEntity | null> {
       return {
@@ -71,9 +72,9 @@ describe("UpdateUserController", () => {
     );
   });
 
-  it("should respond with 400 if id is not provided", async () => {
+  it("should respond with 400 if userId param is invalid", async () => {
     const req = mockRequest();
-    req.body.id = undefined;
+    req.params.userId = "invalid-uuid";
     const { res, status } = mockResponse();
     const { controller } = createSut();
 
@@ -82,7 +83,7 @@ describe("UpdateUserController", () => {
     expect(status).toHaveBeenCalledWith(400);
   });
 
-  it("should respond with 200 if first_name is not provided", async () => {
+  it("should respond with 200 when first_name is undefined", async () => {
     const req = mockRequest();
     req.body.first_name = undefined;
     const { res, status } = mockResponse();
@@ -93,7 +94,7 @@ describe("UpdateUserController", () => {
     expect(status).toHaveBeenCalledWith(200);
   });
 
-  it("should respond with 200 if last_name is not provided", async () => {
+  it("should respond with 200 when last_name is undefined", async () => {
     const req = mockRequest();
     req.body.last_name = undefined;
     const { res, status } = mockResponse();
@@ -104,7 +105,7 @@ describe("UpdateUserController", () => {
     expect(status).toHaveBeenCalledWith(200);
   });
 
-  it("should respond with 200 if email is not provided", async () => {
+  it("should respond with 200 when email is undefined", async () => {
     const req = mockRequest();
     req.body.email = undefined;
     const { res, status } = mockResponse();
@@ -115,7 +116,7 @@ describe("UpdateUserController", () => {
     expect(status).toHaveBeenCalledWith(200);
   });
 
-  it("should respond with 200 if password is not provided", async () => {
+  it("should respond with 200 when password is undefined", async () => {
     const req = mockRequest();
     req.body.password = undefined;
     const { res, status } = mockResponse();
@@ -126,7 +127,7 @@ describe("UpdateUserController", () => {
     expect(status).toHaveBeenCalledWith(200);
   });
 
-  it("should respond with 400 if password length is less than 6 characters", async () => {
+  it("should respond with 400 when password length is less than 6 characters", async () => {
     const req = mockRequest();
     req.body.password = faker.internet.password({ length: 5 });
     const { res, status } = mockResponse();
@@ -140,7 +141,9 @@ describe("UpdateUserController", () => {
   it("should call UpdateUserUseCase with correct data", async () => {
     const req = mockRequest();
     const { res, status, json } = mockResponse();
-    const { controller } = createSut();
+    const { useCase, controller } = createSut();
+
+    const executeSpy = jest.spyOn(useCase, "execute");
 
     await controller.execute(req, res);
 
@@ -148,9 +151,13 @@ describe("UpdateUserController", () => {
     expect(json).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
     );
+    expect(executeSpy).toHaveBeenCalledWith({
+      ...req.body,
+      id: req.params.userId,
+    });
   });
 
-  it("should return 409 if UpdateUserUseCase throws EmailAlreadyExistsError", async () => {
+  it("should return 409 when UpdateUserUseCase throws EmailAlreadyExistsError", async () => {
     const req = mockRequest();
     const { res, status } = mockResponse();
     const { useCase, controller } = createSut();
@@ -158,28 +165,19 @@ describe("UpdateUserController", () => {
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
       throw new EmailAlreadyExistsError();
     });
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(409);
   });
 
-  it("should return 400 when invalid id", async () => {
-    const req = mockRequest();
-    req.params.userId = "invalid-uuid";
-    const { res, status } = mockResponse();
-    const { controller } = createSut();
-
-    await controller.execute(req, res);
-
-    expect(status).toHaveBeenCalledWith(400);
-  });
-
-  it("should return 404 if UpdateUserUseCase not found user", async () => {
+  it("should respond with 400 when UpdateUserUseCase returns null", async () => {
     const req = mockRequest();
     const { res, status, json } = mockResponse();
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(400);
@@ -188,7 +186,7 @@ describe("UpdateUserController", () => {
     });
   });
 
-  it("should return 404 if UpdateUserUseCase throws UserNotFoundError", async () => {
+  it("should return 404 when UpdateUserUseCase throws UserNotFoundError", async () => {
     const req = mockRequest();
     const { res, status } = mockResponse();
     const { useCase, controller } = createSut();
@@ -196,6 +194,7 @@ describe("UpdateUserController", () => {
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
       throw new UserNotFoundError();
     });
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(404);
@@ -207,8 +206,9 @@ describe("UpdateUserController", () => {
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
-      throw new Error();
+      throw new Error("Unexpected");
     });
+
     await controller.execute(req, res);
 
     expect(status).toHaveBeenCalledWith(500);
