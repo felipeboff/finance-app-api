@@ -29,11 +29,14 @@ export class UserRepository implements IUserRepository {
     return result;
   }
 
-  async update(data: UpdateUserDTO): Promise<UserEntity | null> {
+  async update(
+    data: UpdateUserDTO,
+    userId: string,
+  ): Promise<UserEntity | null> {
     const [result] = await this.db
       .update(users)
       .set(data)
-      .where(eq(users.id, data.id))
+      .where(eq(users.id, userId))
       .returning();
     return result;
   }

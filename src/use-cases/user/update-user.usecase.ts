@@ -9,8 +9,11 @@ import { IUpdateUserUseCase } from "@/use-cases/user/user.type";
 export class UpdateUserUseCase implements IUpdateUserUseCase {
   constructor(private readonly userRepo: IUserRepository) {}
 
-  async execute(input: UpdateUserDTO): Promise<UserEntity | null> {
-    const user = await this.userRepo.findById(input.id);
+  async execute(
+    userId: string,
+    input: UpdateUserDTO,
+  ): Promise<UserEntity | null> {
+    const user = await this.userRepo.findById(userId);
     if (!user) throw new UserNotFoundError();
 
     if (input.email) {
@@ -22,12 +25,11 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
 
     const safeUpdateValue: UpdateUserDTO = {
       ...input,
-      id: user.id,
       password: input.password
         ? await hashPassword(input.password)
         : user.password,
     };
 
-    return await this.userRepo.update(safeUpdateValue);
+    return await this.userRepo.update(safeUpdateValue, userId);
   }
 }

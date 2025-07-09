@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ZodError } from "zod";
 
 import { IUpdateUserController } from "@/controllers/types/user.type";
+import { UpdateUserDTO } from "@/dtos/user.dto";
 import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { UserNotFoundError } from "@/errors/user.error";
 import {
@@ -26,9 +27,9 @@ export class UpdateUserController implements IUpdateUserController {
         return badRequest(res, "Invalid user ID");
       }
 
-      const input = await updateUserSchema.parseAsync(req.body);
+      const input: UpdateUserDTO = await updateUserSchema.parseAsync(req.body);
 
-      const updatedUser = await this.useCase.execute(input);
+      const updatedUser = await this.useCase.execute(userId, input);
 
       if (!updatedUser) {
         return badRequest(res, "Failed to update user");

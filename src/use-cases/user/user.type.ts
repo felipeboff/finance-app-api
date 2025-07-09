@@ -14,7 +14,7 @@ export interface IGetUserBalanceUseCase {
 }
 
 export interface IUpdateUserUseCase {
-  execute(input: UpdateUserDTO): Promise<UserEntity | null>;
+  execute(userId: string, input: UpdateUserDTO): Promise<UserEntity | null>;
 }
 
 export interface IDeleteUserUseCase {
