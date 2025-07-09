@@ -27,10 +27,7 @@ export class UpdateTransactionController
 
       const input = await updateTransactionSchema.parseAsync(req.body);
 
-      const updatedTransaction = await this.useCase.execute({
-        id: transactionId,
-        ...input,
-      });
+      const updatedTransaction = await this.useCase.execute(input);
 
       if (!updatedTransaction) {
         return badRequest(res, "Failed to update transaction");
