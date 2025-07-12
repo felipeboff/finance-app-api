@@ -8,6 +8,12 @@ import { EmailAlreadyExistsError } from "@/errors/user.error";
 import { ICreateUserUseCase } from "@/use-cases/user/user.type";
 
 describe("CreateUserController", () => {
+  const user: CreateUserDTO = {
+    first_name: faker.person.firstName(),
+    last_name: faker.person.lastName(),
+    email: faker.internet.email(),
+    password: faker.internet.password({ length: 10 }),
+  };
   class CreateUserUseCaseStub implements ICreateUserUseCase {
     async execute(data: CreateUserDTO): Promise<UserEntity | null> {
       return {
@@ -35,14 +41,7 @@ describe("CreateUserController", () => {
   };
 
   const mockRequest = () => {
-    const body: CreateUserDTO = {
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      email: faker.internet.email(),
-      password: faker.internet.password({ length: 10 }),
-    };
-
-    return { body } as Request;
+    return { body: { ...user } } as Request;
   };
 
   it("should return 201 with created user when input is valid", async () => {
