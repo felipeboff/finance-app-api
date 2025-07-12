@@ -38,9 +38,13 @@ describe("CreateTransactionController", () => {
   };
 
   const mockResponse = () => {
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
-    return { res: { status } as unknown as Response, status, json };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   const mockRequest = (): Request => {
@@ -67,14 +71,14 @@ describe("CreateTransactionController", () => {
 
   it("should respond with 200 and updated transaction", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     const executeSpy = jest.spyOn(useCase, "execute");
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(200);
-    expect(json).toHaveBeenCalledWith(
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
     );
     expect(executeSpy).toHaveBeenCalledWith(req.params.transactionId, req.body);
@@ -83,31 +87,31 @@ describe("CreateTransactionController", () => {
   it("should respond with 400 when transactionId is invalid", async () => {
     const req = mockRequest();
     req.params.transactionId = "invalid-uuid";
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
-    expect(json).toHaveBeenCalledWith({
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
       error: "Invalid transaction ID",
     });
   });
 
   it("should respond with 404 when transaction not found", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     jest.spyOn(useCase, "execute").mockResolvedValue(null);
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 404 when use case throws TransactionNotFoundError", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -116,12 +120,12 @@ describe("CreateTransactionController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it("should return 500 when use case throws unexpected error", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -130,6 +134,6 @@ describe("CreateTransactionController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

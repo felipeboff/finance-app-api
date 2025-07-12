@@ -23,13 +23,10 @@ describe("DeleteUserController", () => {
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
-    };
-
-    return {
-      res: res as unknown as Response,
-      status: res.status,
-      json: res.json,
-    };
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   const mockRequest = () => {
@@ -43,41 +40,41 @@ describe("DeleteUserController", () => {
   it("should return 200 when user is successfully deleted", async () => {
     const { controller } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(200);
   });
 
   it("should return 400 when userId param is invalid", async () => {
     const { controller } = createSut();
     const req = mockRequest();
     req.params.userId = "invalid-user-id";
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 404 when user is not found", async () => {
     const { controller, useCase } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
       throw new UserNotFoundError();
     });
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it("should return 500 when use case throws unknown error", async () => {
     const { controller, useCase } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
       throw new Error();
@@ -85,6 +82,6 @@ describe("DeleteUserController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

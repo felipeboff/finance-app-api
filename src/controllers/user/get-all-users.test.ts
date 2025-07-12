@@ -28,23 +28,27 @@ describe("GetAllUsersController", () => {
   };
 
   const mockResponse = () => {
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
-    return { res: { status } as unknown as Response, status, json };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   it("should return 200 with all users when use case returns users", async () => {
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(res);
 
-    expect(status).toHaveBeenCalledWith(200);
-    expect(json).toHaveBeenCalledWith(users);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(users);
   });
 
   it("should return 500 when use case throws error", async () => {
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -53,6 +57,6 @@ describe("GetAllUsersController", () => {
 
     await controller.execute(res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

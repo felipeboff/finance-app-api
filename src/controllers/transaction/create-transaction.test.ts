@@ -27,9 +27,13 @@ describe("CreateTransactionController", () => {
   };
 
   const mockResponse = () => {
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
-    return { res: { status } as unknown as Response, status, json };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   const mockRequest = (): Request => {
@@ -52,13 +56,13 @@ describe("CreateTransactionController", () => {
 
   it("should return 201 with created transaction when input is valid", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(201);
-    expect(json).toHaveBeenCalledWith(
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
     );
   });
@@ -66,36 +70,36 @@ describe("CreateTransactionController", () => {
   it("should return 400 when user_id is missing", async () => {
     const req = mockRequest();
     req.body.user_id = undefined;
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 400 when amount is missing", async () => {
     const req = mockRequest();
     req.body.amount = undefined;
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 400 when type is invalid", async () => {
     const req = mockRequest();
     req.body.type = "INVALID";
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should call use case with correct data", async () => {
     const req = mockRequest();
-    const { res } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     const executeSpy = jest.spyOn(useCase, "execute");
@@ -106,22 +110,22 @@ describe("CreateTransactionController", () => {
 
   it("should return 400 if use case returns null", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
-    expect(json).toHaveBeenCalledWith(
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ error: "Failed to create transaction" }),
     );
   });
 
   it("should return 400 if use case throws UserNotFoundError", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -130,15 +134,15 @@ describe("CreateTransactionController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
-    expect(json).toHaveBeenCalledWith(
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ error: "User not found" }),
     );
   });
 
   it("should return 500 on unknown error", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -147,6 +151,6 @@ describe("CreateTransactionController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

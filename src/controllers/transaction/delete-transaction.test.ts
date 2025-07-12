@@ -23,13 +23,10 @@ describe("DeleteTransactionController", () => {
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
-    };
-
-    return {
-      res: res as Partial<Response> as Response,
-      status: res.status,
-      json: res.json,
-    };
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   const mockRequest = () => {
@@ -43,17 +40,17 @@ describe("DeleteTransactionController", () => {
   it("should return 200 when transaction is successfully deleted", async () => {
     const { controller } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(200);
   });
 
   it("should return 404 when transaction is not found", async () => {
     const { controller, useCase } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
       throw new TransactionNotFoundError();
@@ -61,22 +58,22 @@ describe("DeleteTransactionController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it("should return 400 when transactionId param is invalid", async () => {
     const { controller } = createSut();
     const req = mockRequest();
     req.params.transactionId = "invalid-transaction-id";
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 500 when use case throws error", async () => {
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -85,6 +82,6 @@ describe("DeleteTransactionController", () => {
 
     await controller.execute(mockRequest(), res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

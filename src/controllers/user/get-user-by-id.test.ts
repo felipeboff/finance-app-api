@@ -28,9 +28,13 @@ describe("GetUserByIdController", () => {
   };
 
   const mockResponse = () => {
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
-    return { res: { status } as unknown as Response, status, json };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   const mockRequest = () => {
@@ -44,40 +48,40 @@ describe("GetUserByIdController", () => {
   it("should return 400 when userId param is invalid", async () => {
     const req = mockRequest();
     req.params.userId = "invalid_user_id";
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 404 when user is not found", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller, useCase } = createSut();
 
     jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it("should return 200 with user when user is found", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(200);
-    expect(json).toHaveBeenCalledWith(expect.objectContaining(user));
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining(user));
   });
 
   it("should return 500 when use case throws unexpected error", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -86,6 +90,6 @@ describe("GetUserByIdController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

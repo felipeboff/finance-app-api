@@ -31,13 +31,10 @@ describe("GetUserBalanceController", () => {
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
-    };
-
-    return {
-      res: res as unknown as Response,
-      status: res.status,
-      json: res.json,
-    };
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   const mockRequest = () => {
@@ -51,43 +48,43 @@ describe("GetUserBalanceController", () => {
   it("should return 200 if user balance is found", async () => {
     const { controller } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(200);
   });
 
   it("should return 400 if user id is invalid", async () => {
     const { controller } = createSut();
     const req = mockRequest();
     req.params.userId = "invalid-user-id";
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 404 if user balance is not found", async () => {
     const { controller, useCase } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it("should return 500 if an error occurs", async () => {
     const { controller, useCase } = createSut();
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
 
     jest.spyOn(useCase, "execute").mockRejectedValueOnce(new Error());
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });

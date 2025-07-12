@@ -25,9 +25,13 @@ describe("CreateUserController", () => {
   };
 
   const mockResponse = () => {
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
-    return { res: { status } as unknown as Response, status, json };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      end: jest.fn().mockReturnThis(),
+    } as Partial<Response> as Response;
+    return res;
   };
 
   const mockRequest = () => {
@@ -43,13 +47,13 @@ describe("CreateUserController", () => {
 
   it("should return 201 with created user when input is valid", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(201);
-    expect(json).toHaveBeenCalledWith(
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
     );
   });
@@ -57,79 +61,79 @@ describe("CreateUserController", () => {
   it("should return 400 when first_name is missing", async () => {
     const req = mockRequest();
     req.body.first_name = undefined;
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 400 when last_name is missing", async () => {
     const req = mockRequest();
     req.body.last_name = undefined;
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 400 when email is missing", async () => {
     const req = mockRequest();
     req.body.email = undefined;
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 400 when password is missing", async () => {
     const req = mockRequest();
     req.body.password = undefined;
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 400 when password is too short", async () => {
     const req = mockRequest();
     req.body.password = faker.internet.password({ length: 5 });
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should return 400 when email is invalid", async () => {
     const req = mockRequest();
     req.body.email = "invalid-email";
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { controller } = createSut();
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
   it("should call use case with correct data when input is valid", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
     const { useCase, controller } = createSut();
 
     const executeSpy = jest.spyOn(useCase, "execute");
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(201);
-    expect(json).toHaveBeenCalledWith(
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ id: expect.any(String) }),
     );
     expect(executeSpy).toHaveBeenCalledWith(req.body);
@@ -137,7 +141,7 @@ describe("CreateUserController", () => {
 
   it("should return 409 when email already exists", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -145,12 +149,12 @@ describe("CreateUserController", () => {
     });
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(409);
+    expect(res.status).toHaveBeenCalledWith(409);
   });
 
   it("should return 500 when use case throws unknown error", async () => {
     const req = mockRequest();
-    const { res, status } = mockResponse();
+    const res = mockResponse();
     const { useCase, controller } = createSut();
 
     jest.spyOn(useCase, "execute").mockImplementationOnce(() => {
@@ -159,20 +163,20 @@ describe("CreateUserController", () => {
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(500);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 
   it("should return 400 when user creation fails", async () => {
     const req = mockRequest();
-    const { res, status, json } = mockResponse();
+    const res = mockResponse();
 
     const { controller, useCase } = createSut();
     jest.spyOn(useCase, "execute").mockResolvedValueOnce(null);
 
     await controller.execute(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
-    expect(json).toHaveBeenCalledWith(
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ error: "Failed to create user" }),
     );
   });
