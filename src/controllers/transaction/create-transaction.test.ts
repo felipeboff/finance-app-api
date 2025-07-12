@@ -8,6 +8,18 @@ import { UserNotFoundError } from "@/errors/user.error";
 import { ICreateTransactionUseCase } from "@/use-cases/transaction/transaction.type";
 
 describe("CreateTransactionController", () => {
+  const transaction: CreateTransactionDTO = {
+    user_id: faker.string.uuid(),
+    title: faker.lorem.sentence(),
+    date: faker.date.anytime(),
+    amount: faker.number.int({ min: 1, max: 1000 }),
+    type: faker.helpers.arrayElement([
+      TransactionType.EARNING,
+      TransactionType.EXPENSE,
+      TransactionType.INVESTMENT,
+    ]),
+  };
+
   class CreateTransactionUseCaseStub implements ICreateTransactionUseCase {
     async execute(
       data: CreateTransactionDTO,
@@ -37,21 +49,9 @@ describe("CreateTransactionController", () => {
   };
 
   const mockRequest = (): Request => {
-    const type = faker.helpers.arrayElement([
-      TransactionType.EARNING,
-      TransactionType.EXPENSE,
-      TransactionType.INVESTMENT,
-    ]);
-
-    const body: CreateTransactionDTO = {
-      user_id: faker.string.uuid(),
-      amount: faker.number.int({ min: 1, max: 1000 }),
-      title: faker.lorem.sentence(),
-      date: new Date(),
-      type,
-    };
-
-    return { body } as Request;
+    return {
+      body: { ...transaction },
+    } as Partial<Request> as Request;
   };
 
   it("should return 201 with created transaction when input is valid", async () => {
