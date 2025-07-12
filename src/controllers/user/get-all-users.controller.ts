@@ -4,7 +4,7 @@ import { IGetAllUsersController } from "@/controllers/types/user.type";
 import { ok, serverError } from "@/helpers/http-response.helper";
 import { IGetAllUsersUseCase } from "@/use-cases/user/user.type";
 
-export class GetAllUserController implements IGetAllUsersController {
+export class GetAllUsersController implements IGetAllUsersController {
   constructor(private readonly useCase: IGetAllUsersUseCase) {}
 
   async execute(res: Response): Promise<Response> {

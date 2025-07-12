@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker/locale/pt_BR";
 import { Response } from "express";
 
-import { GetAllUserController } from "@/controllers/user/get-all-users.controller";
+import { GetAllUsersController } from "@/controllers/user/get-all-users.controller";
 import { UserEntity } from "@/entities/user.entity";
 import { IGetAllUsersUseCase } from "@/use-cases/user/user.type";
 
-describe("GetAllController", () => {
+describe("GetAllUsersController", () => {
   const users: UserEntity[] = Array.from({ length: 2 }, () => ({
     id: faker.string.uuid(),
     first_name: faker.person.firstName(),
@@ -23,7 +23,7 @@ describe("GetAllController", () => {
 
   const createSut = () => {
     const useCase = new GetAllUsersUseCaseStub();
-    const controller = new GetAllUserController(useCase);
+    const controller = new GetAllUsersController(useCase);
     return { useCase, controller };
   };
 
