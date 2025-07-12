@@ -8,14 +8,25 @@ import { TransactionNotFoundError } from "@/errors/transaction.error";
 import { IUpdateTransactionUseCase } from "@/use-cases/transaction/transaction.type";
 
 describe("CreateTransactionController", () => {
-  const transactionFaker: TransactionEntity = {
+  const transaction: TransactionEntity = {
     id: faker.string.uuid(),
     user_id: faker.string.uuid(),
     title: faker.lorem.sentence(),
-    date: new Date(),
+    date: faker.date.anytime(),
     amount: faker.number.int({ min: 1, max: 1000 }),
     type: faker.helpers.arrayElement(["EARNING", "EXPENSE", "INVESTMENT"]),
     created_at: new Date(),
+  };
+
+  const transactionUpdate: UpdateTransactionDTO = {
+    title: faker.lorem.sentence(),
+    date: faker.date.anytime(),
+    amount: faker.number.int({ min: 1, max: 1000 }),
+    type: faker.helpers.arrayElement([
+      TransactionType.EARNING,
+      TransactionType.EXPENSE,
+      TransactionType.INVESTMENT,
+    ]),
   };
 
   class UpdateTransactionUseCaseStub implements IUpdateTransactionUseCase {
@@ -24,7 +35,7 @@ describe("CreateTransactionController", () => {
       input: UpdateTransactionDTO,
     ): Promise<TransactionEntity | null> {
       return {
-        ...transactionFaker,
+        ...transaction,
         ...input,
         id: transactionId,
       };
@@ -48,24 +59,11 @@ describe("CreateTransactionController", () => {
   };
 
   const mockRequest = (): Request => {
-    const type = faker.helpers.arrayElement([
-      TransactionType.EARNING,
-      TransactionType.EXPENSE,
-      TransactionType.INVESTMENT,
-    ]);
-
-    const body: UpdateTransactionDTO = {
-      amount: faker.number.int({ min: 1, max: 1000 }),
-      title: faker.lorem.sentence(),
-      date: new Date(),
-      type,
-    };
-
     return {
       params: {
-        transactionId: transactionFaker.id,
+        transactionId: transaction.id,
       },
-      body,
+      body: transactionUpdate,
     } as Partial<Request> as Request;
   };
 

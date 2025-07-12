@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker/locale/pt_BR";
 import { Response } from "express";
 
 import { GetAllTransactionsController } from "@/controllers/transaction/get-all-transactions.controller";
+import { TransactionType } from "@/dtos/transaction.dto";
 import { TransactionEntity } from "@/entities/transaction.entity";
 import { IGetAllTransactionsUseCase } from "@/use-cases/transaction/transaction.type";
 
@@ -12,7 +13,11 @@ describe("GetAllTransactionsController", () => {
     date: faker.date.anytime(),
     user_id: faker.string.uuid(),
     amount: faker.number.int({ min: 1, max: 1000 }),
-    type: faker.helpers.arrayElement(["EARNING", "EXPENSE", "INVESTMENT"]),
+    type: faker.helpers.arrayElement([
+      TransactionType.EARNING,
+      TransactionType.EXPENSE,
+      TransactionType.INVESTMENT,
+    ]),
     created_at: faker.date.anytime(),
   }));
 
